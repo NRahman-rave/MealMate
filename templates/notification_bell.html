@@ -1,0 +1,84 @@
+{% if logged_in %}
+
+<style>
+
+.mealmate-notification-bell {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 42px;
+    height: 42px;
+    border: 1px solid #dbe7dd;
+    border-radius: 50%;
+    background: #ffffff;
+    color: #17372b;
+    text-decoration: none;
+    transition:
+        background 0.2s ease,
+        transform 0.2s ease;
+}
+
+.mealmate-notification-bell:hover {
+    background: #eef7ef;
+    transform: translateY(-1px);
+}
+
+.mealmate-notification-bell i {
+    font-size: 17px;
+}
+
+.mealmate-notification-count {
+    position: absolute;
+    top: -5px;
+    right: -5px;
+
+    min-width: 20px;
+    height: 20px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    padding: 0 5px;
+
+    background: #d94949;
+    color: #ffffff;
+
+    border: 2px solid #ffffff;
+    border-radius: 20px;
+
+    font-size: 10px;
+    font-weight: 900;
+}
+
+</style>
+
+
+<a
+    href="{% url 'notifications' %}"
+    class="mealmate-notification-bell"
+    title="Notifications"
+>
+
+<i class="fa-solid fa-bell"></i>
+
+
+{% if unread_count %}
+
+<span class="mealmate-notification-count">
+
+{% if unread_count > 99 %}
+99+
+{% else %}
+{{ unread_count }}
+{% endif %}
+
+</span>
+
+{% endif %}
+
+
+</a>
+
+{% endif %}

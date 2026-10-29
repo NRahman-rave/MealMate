@@ -1,0 +1,556 @@
+{% extends 'app_base.html' %}
+
+
+{% block title %}
+My Interests | MealMate
+{% endblock %}
+
+
+{% block content %}
+
+
+<style>
+
+.interest-profile {
+    padding: 50px 6%;
+    min-height: calc(100vh - 75px);
+    background: #f7faf7;
+}
+
+.interest-heading {
+    margin-bottom: 35px;
+}
+
+.interest-heading h1 {
+    margin: 5px 0 10px;
+    color: #142a38;
+    font-size: 42px;
+}
+
+.interest-heading p {
+    color: #68787f;
+}
+
+.interest-stats {
+    display: grid;
+    grid-template-columns:
+        repeat(4, 1fr);
+    gap: 18px;
+    margin-bottom: 30px;
+}
+
+.interest-stat {
+    padding: 23px;
+    background: white;
+    border: 1px solid #dfe8e1;
+    border-radius: 16px;
+}
+
+.interest-stat strong {
+    display: block;
+    margin-bottom: 5px;
+    color: #168447;
+    font-size: 28px;
+}
+
+.interest-stat span {
+    color: #65757c;
+    font-size: 13px;
+}
+
+.profile-grid {
+    display: grid;
+    grid-template-columns:
+        repeat(2, 1fr);
+    gap: 22px;
+}
+
+.profile-panel {
+    padding: 26px;
+    background: #ffffff;
+    border: 1px solid #dfe8e1;
+    border-radius: 18px;
+}
+
+.profile-panel h2 {
+    margin-bottom: 20px;
+    color: #142a38;
+    font-size: 21px;
+}
+
+.profile-ranking {
+    display: grid;
+    gap: 10px;
+}
+
+.profile-ranking-item {
+    display: flex;
+    justify-content: space-between;
+    gap: 20px;
+    padding: 11px 13px;
+    background: #f7faf7;
+    border-radius: 10px;
+}
+
+.profile-ranking-item span:first-child {
+    color: #34464d;
+    font-weight: 700;
+}
+
+.profile-ranking-item span:last-child {
+    color: #168447;
+    font-weight: 800;
+}
+
+.interested-food-section {
+    margin-top: 25px;
+}
+
+.interested-food-grid {
+    display: grid;
+    grid-template-columns:
+        repeat(3, 1fr);
+    gap: 18px;
+}
+
+.interested-food-card {
+    padding: 20px;
+    background: white;
+    border: 1px solid #dfe8e1;
+    border-radius: 15px;
+}
+
+.interested-food-card h3 {
+    margin-bottom: 7px;
+    color: #142a38;
+}
+
+.interested-food-card p {
+    margin-bottom: 10px;
+    color: #168447;
+    font-weight: 700;
+}
+
+.interested-food-card a {
+    display: inline-flex;
+    margin-top: 10px;
+    color: #168447;
+    font-weight: 800;
+    text-decoration: none;
+}
+
+.empty-profile {
+    color: #7b8980;
+}
+
+@media (max-width: 900px) {
+
+    .interest-stats,
+    .interested-food-grid {
+        grid-template-columns:
+            repeat(2, 1fr);
+    }
+
+}
+
+@media (max-width: 650px) {
+
+    .interest-stats,
+    .profile-grid,
+    .interested-food-grid {
+        grid-template-columns: 1fr;
+    }
+
+}
+
+</style>
+
+
+<main class="interest-profile">
+
+
+<section class="interest-heading">
+
+<p class="dashboard-label">
+SMART RESCUE PROFILE
+</p>
+
+<h1>
+My Interests
+</h1>
+
+<p>
+
+MealMate is learning what food,
+areas and pickup times are useful
+to you.
+
+This information will later help
+Smart Rescue Match offer relevant
+food rescue opportunities.
+
+</p>
+
+</section>
+
+
+<section class="interest-stats">
+
+
+<div class="interest-stat">
+
+<strong>
+{{ interest_count }}
+</strong>
+
+<span>
+Saved food interests
+</span>
+
+</div>
+
+
+<div class="interest-stat">
+
+<strong>
+{{ activity_count }}
+</strong>
+
+<span>
+Recorded interactions
+</span>
+
+</div>
+
+
+<div class="interest-stat">
+
+<strong>
+{{ reservation_count }}
+</strong>
+
+<span>
+Reservations
+</span>
+
+</div>
+
+
+<div class="interest-stat">
+
+<strong>
+{{ collected_count }}
+</strong>
+
+<span>
+Successful collections
+</span>
+
+</div>
+
+
+</section>
+
+
+<section class="profile-grid">
+
+
+<div class="profile-panel">
+
+<h2>
+<i class="fa-solid fa-magnifying-glass"></i>
+Most Searched
+</h2>
+
+<div class="profile-ranking">
+
+{% for value, count in top_searches %}
+
+<div class="profile-ranking-item">
+
+<span>
+{{ value|title }}
+</span>
+
+<span>
+{{ count }}
+</span>
+
+</div>
+
+{% empty %}
+
+<p class="empty-profile">
+No searches recorded yet.
+</p>
+
+{% endfor %}
+
+</div>
+
+</div>
+
+
+<div class="profile-panel">
+
+<h2>
+<i class="fa-solid fa-location-dot"></i>
+Preferred Areas
+</h2>
+
+<div class="profile-ranking">
+
+{% for value, count in top_areas %}
+
+<div class="profile-ranking-item">
+
+<span>
+{{ value }}
+</span>
+
+<span>
+{{ count }}
+</span>
+
+</div>
+
+{% empty %}
+
+<p class="empty-profile">
+No area preferences yet.
+</p>
+
+{% endfor %}
+
+</div>
+
+</div>
+
+
+<div class="profile-panel">
+
+<h2>
+<i class="fa-solid fa-bowl-food"></i>
+Preferred Food Types
+</h2>
+
+<div class="profile-ranking">
+
+{% for value, count in top_food_types %}
+
+<div class="profile-ranking-item">
+
+<span>
+{{ value|title }}
+</span>
+
+<span>
+{{ count }}
+</span>
+
+</div>
+
+{% empty %}
+
+<p class="empty-profile">
+No food filters used yet.
+</p>
+
+{% endfor %}
+
+</div>
+
+</div>
+
+
+<div class="profile-panel">
+
+<h2>
+<i class="fa-solid fa-store"></i>
+Businesses You Explore
+</h2>
+
+<div class="profile-ranking">
+
+{% for value, count in top_businesses %}
+
+<div class="profile-ranking-item">
+
+<span>
+{{ value }}
+</span>
+
+<span>
+{{ count }}
+</span>
+
+</div>
+
+{% empty %}
+
+<p class="empty-profile">
+No business preferences yet.
+</p>
+
+{% endfor %}
+
+</div>
+
+</div>
+
+
+<div class="profile-panel">
+
+<h2>
+<i class="fa-solid fa-clock"></i>
+Preferred Pickup Times
+</h2>
+
+<div class="profile-ranking">
+
+{% for value, count in top_pickup_times %}
+
+<div class="profile-ranking-item">
+
+<span>
+{{ value|title }}
+</span>
+
+<span>
+{{ count }}
+</span>
+
+</div>
+
+{% empty %}
+
+<p class="empty-profile">
+No pickup preferences yet.
+</p>
+
+{% endfor %}
+
+</div>
+
+</div>
+
+
+<div class="profile-panel">
+
+<h2>
+<i class="fa-solid fa-eye"></i>
+Most Viewed Foods
+</h2>
+
+<div class="profile-ranking">
+
+{% for value, count in top_viewed_foods %}
+
+<div class="profile-ranking-item">
+
+<span>
+{{ value }}
+</span>
+
+<span>
+{{ count }}
+</span>
+
+</div>
+
+{% empty %}
+
+<p class="empty-profile">
+Open some food listings to
+build your profile.
+</p>
+
+{% endfor %}
+
+</div>
+
+</div>
+
+
+</section>
+
+
+<section class="interested-food-section">
+
+
+<div class="interest-heading">
+
+<p class="dashboard-label">
+SAVED
+</p>
+
+<h2>
+Food You're Interested In
+</h2>
+
+</div>
+
+
+<div class="interested-food-grid">
+
+
+{% for food in interest_cards %}
+
+
+<article class="interested-food-card">
+
+<h3>
+{{ food.food_name }}
+</h3>
+
+<p>
+{{ food.business_name }}
+</p>
+
+<span>
+
+<i class="fa-solid fa-location-dot"></i>
+
+{{ food.pickup_address }}
+
+</span>
+
+<br>
+
+<a
+    href="{% url 'track_food_view' food.id %}"
+>
+View Food →
+</a>
+
+</article>
+
+
+{% empty %}
+
+
+<div class="profile-panel">
+
+<p class="empty-profile">
+
+Click the heart on a food listing
+when you're interested in it.
+
+</p>
+
+</div>
+
+
+{% endfor %}
+
+
+</div>
+
+
+</section>
+
+
+</main>
+
+
+{% endblock %}

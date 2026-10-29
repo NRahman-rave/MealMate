@@ -1,0 +1,138 @@
+<div class="smart-match-explanation">
+
+
+<div class="smart-match-score-row">
+
+<div>
+
+<span class="smart-match-small">
+
+SMART MATCH
+
+</span>
+
+
+<strong class="smart-match-score">
+
+{{ match_score }}
+
+</strong>
+
+</div>
+
+
+<div
+    class="
+        reliability-badge
+        {% if reliability.score >= 90 %}
+            reliability-high
+        {% elif reliability.score >= 75 %}
+            reliability-good
+        {% elif reliability.score >= 60 %}
+            reliability-developing
+        {% else %}
+            reliability-low
+        {% endif %}
+    "
+>
+
+<i class="fa-solid fa-shield-heart"></i>
+
+{{ reliability.score }}%
+
+{{ reliability.label }}
+
+</div>
+
+</div>
+
+
+
+<div class="match-reasons">
+
+
+<h4>
+
+<i class="fa-solid fa-wand-magic-sparkles"></i>
+
+Why MealMate matched you
+
+</h4>
+
+
+{% for reason in reasons %}
+
+<div class="match-reason">
+
+<div class="match-reason-left">
+
+<i class="fa-solid {{ reason.icon }}"></i>
+
+<span>
+
+{{ reason.text }}
+
+</span>
+
+</div>
+
+
+<strong>
+
++{{ reason.points }}
+
+</strong>
+
+</div>
+
+
+{% empty %}
+
+<div class="match-reason">
+
+<div class="match-reason-left">
+
+<i class="fa-solid fa-user-check"></i>
+
+<span>
+
+Your MealMate activity matched this rescue.
+
+</span>
+
+</div>
+
+</div>
+
+{% endfor %}
+
+
+
+<div class="match-reason reliability-reason">
+
+<div class="match-reason-left">
+
+<i class="fa-solid fa-shield-heart"></i>
+
+<span>
+
+Your collection reliability
+
+</span>
+
+</div>
+
+
+<strong>
+
++{{ reliability_points }}
+
+</strong>
+
+</div>
+
+
+</div>
+
+
+</div>

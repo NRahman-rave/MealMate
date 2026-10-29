@@ -1,0 +1,40 @@
+{% extends 'app_base.html' %}
+{% block title %}{{ food.food_name }} | MealMate{% endblock %}
+{% block content %}
+<main class="detail-page">
+    <a href="{% if current_user.role == 'business' %}{% url 'business_dashboard' %}{% else %}{% url 'dashboard' %}{% endif %}" class="back-link"><i class="fa-solid fa-arrow-left"></i> Back</a>
+    <div class="detail-grid">
+        <section class="detail-card detail-main">
+            <div class="detail-icon"><i class="fa-solid fa-bowl-food"></i></div>
+            <div class="detail-status-row"><span class="food-status">{{ food.status|title }}</span><span class="food-quantity">{{ food.quantity }} remaining</span></div>
+            <p class="dashboard-label">{{ food.business_name }}</p>
+            <h1>{{ food.food_name }}</h1>
+            {% if food.description %}<p class="detail-description">{{ food.description }}</p>{% endif %}
+            <div class="detail-info-grid">
+                <div><i class="fa-solid fa-location-dot"></i><span><strong>Pickup address</strong>{{ food.pickup_address }}</span></div>
+                <div><i class="fa-solid fa-clock"></i><span><strong>Pickup starts</strong>{{ food.pickup_start|date:"d M Y, H:i" }}</span></div>
+                <div><i class="fa-solid fa-hourglass-end"></i><span><strong>Pickup ends</strong>{{ food.pickup_end|date:"d M Y, H:i" }}</span></div>
+            </div>
+        </section>
+        <aside class="detail-card pickup-action-card">
+            <h2>Collection</h2>
+            <p>Open directions in Google Maps and arrive during the pickup window.</p>
+            <a class="maps-button" href="https://www.google.com/maps/dir/?api=1&destination={{ food.pickup_address|urlencode }}" target="_blank" rel="noopener noreferrer"><i class="fa-solid fa-diamond-turn-right"></i> Get Directions</a>
+            {% if current_user.role == 'user' %}
+                {% if already_reserved %}
+                    <div class="already-reserved"><i class="fa-solid fa-circle-check"></i> You already reserved this food.</div>
+                    <a href="{% url 'my_reservations' %}" class="secondary-app-button full-button">View My Reservations</a>
+                {% elif food.status == 'available' and food.quantity > 0 %}
+                    <form method="POST" action="{% url 'reserve_food' food.id %}">
+                        {% csrf_token %}
+                        <button type="submit" class="reserve-button"><i class="fa-solid fa-bag-shopping"></i> Reserve 1 Portion</button>
+                    </form>
+                    <small class="reserve-note">One active reservation per user for each food listing.</small>
+                {% else %}
+                    <div class="unavailable-box">This food is no longer available.</div>
+                {% endif %}
+            {% endif %}
+        </aside>
+    </div>
+</main>
+{% endblock %}

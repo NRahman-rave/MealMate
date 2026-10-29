@@ -1,0 +1,405 @@
+{% extends 'app_base.html' %}
+
+
+{% block title %}
+Notifications | MealMate
+{% endblock %}
+
+
+{% block content %}
+
+
+<style>
+
+.notifications-page {
+    min-height: calc(100vh - 75px);
+    padding: 50px 6%;
+    background: #f7faf7;
+}
+
+.notifications-header {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 20px;
+    margin-bottom: 30px;
+}
+
+.notifications-title h1 {
+    margin: 4px 0 8px;
+    color: #142a38;
+    font-size: 42px;
+}
+
+.notifications-title p {
+    color: #68787f;
+}
+
+.notification-header-actions {
+    display: flex;
+    gap: 9px;
+    flex-wrap: wrap;
+}
+
+.notification-header-actions form {
+    margin: 0;
+}
+
+.notification-action-button {
+    padding: 10px 14px;
+    border: 1px solid #d8e4da;
+    border-radius: 9px;
+    background: #ffffff;
+    color: #526159;
+    font-weight: 800;
+    cursor: pointer;
+}
+
+.notification-list {
+    display: grid;
+    gap: 12px;
+}
+
+.notification-item {
+    display: flex;
+    gap: 16px;
+    padding: 20px;
+    background: #ffffff;
+    border: 1px solid #dde7df;
+    border-radius: 15px;
+}
+
+.notification-item.unread {
+    border-color: #a8d5b2;
+    background: #f4fbf5;
+}
+
+.notification-icon {
+    flex-shrink: 0;
+    width: 45px;
+    height: 45px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 12px;
+
+    background: #e9f6eb;
+    color: #168447;
+
+    font-size: 18px;
+}
+
+.notification-item.rescue_offer
+.notification-icon {
+    background: #fff3dc;
+    color: #a46d12;
+}
+
+.notification-item.pickup_reminder
+.notification-icon {
+    background: #fde8e8;
+    color: #b44747;
+}
+
+.notification-body {
+    flex: 1;
+}
+
+.notification-body h3 {
+    margin: 0 0 5px;
+    color: #142a38;
+    font-size: 16px;
+}
+
+.notification-body p {
+    margin: 0;
+    color: #66777e;
+    line-height: 1.5;
+    font-size: 14px;
+}
+
+.notification-time {
+    display: block;
+    margin-top: 8px;
+    color: #93a09a;
+    font-size: 11px;
+}
+
+.notification-open {
+    display: inline-flex;
+    align-items: center;
+    margin-top: 11px;
+
+    color: #168447;
+    text-decoration: none;
+    font-size: 13px;
+    font-weight: 900;
+}
+
+.unread-dot {
+    width: 9px;
+    height: 9px;
+    margin-top: 7px;
+    border-radius: 50%;
+    background: #168447;
+}
+
+.no-notifications {
+    padding: 70px 25px;
+    background: #ffffff;
+    border: 1px dashed #cad8cd;
+    border-radius: 18px;
+    text-align: center;
+}
+
+.no-notifications i {
+    margin-bottom: 15px;
+    color: #168447;
+    font-size: 38px;
+}
+
+@media (max-width: 650px) {
+
+    .notifications-page {
+        padding: 35px 20px;
+    }
+
+    .notifications-header {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .notifications-title h1 {
+        font-size: 34px;
+    }
+
+}
+
+</style>
+
+
+<main class="notifications-page">
+
+
+<section class="notifications-header">
+
+
+<div class="notifications-title">
+
+<p class="dashboard-label">
+MEALMATE UPDATES
+</p>
+
+<h1>
+Notifications
+</h1>
+
+<p>
+
+{% if unread_count %}
+
+You have {{ unread_count }}
+unread notification{{ unread_count|pluralize }}.
+
+{% else %}
+
+You're all caught up.
+
+{% endif %}
+
+</p>
+
+</div>
+
+
+<div class="notification-header-actions">
+
+
+<form
+    method="POST"
+    action="{% url 'mark_all_notifications_read' %}"
+>
+
+{% csrf_token %}
+
+<button
+    type="submit"
+    class="notification-action-button"
+>
+
+<i class="fa-solid fa-check-double"></i>
+
+Mark All Read
+
+</button>
+
+</form>
+
+
+<form
+    method="POST"
+    action="{% url 'clear_read_notifications' %}"
+>
+
+{% csrf_token %}
+
+<button
+    type="submit"
+    class="notification-action-button"
+>
+
+<i class="fa-solid fa-broom"></i>
+
+Clear Read
+
+</button>
+
+</form>
+
+
+</div>
+
+
+</section>
+
+
+<section class="notification-list">
+
+
+{% for notification in notifications %}
+
+
+<article
+    class="
+        notification-item
+        {{ notification.notification_type }}
+        {% if not notification.is_read %}unread{% endif %}
+    "
+>
+
+
+<div class="notification-icon">
+
+
+{% if notification.notification_type == "rescue_offer" %}
+
+<i class="fa-solid fa-bolt"></i>
+
+
+{% elif notification.notification_type == "pickup_reminder" %}
+
+<i class="fa-solid fa-clock"></i>
+
+
+{% elif notification.notification_type == "rescue_transferred" %}
+
+<i class="fa-solid fa-people-arrows"></i>
+
+
+{% elif notification.notification_type == "rescue_accepted" %}
+
+<i class="fa-solid fa-circle-check"></i>
+
+
+{% else %}
+
+<i class="fa-solid fa-bell"></i>
+
+{% endif %}
+
+
+</div>
+
+
+<div class="notification-body">
+
+
+<h3>
+
+{{ notification.title }}
+
+</h3>
+
+
+<p>
+
+{{ notification.message }}
+
+</p>
+
+
+<span class="notification-time">
+
+{{ notification.created_at|date:"d M Y, H:i" }}
+
+</span>
+
+
+<a
+    href="{% url 'open_notification' notification.id %}"
+    class="notification-open"
+>
+
+{% if notification.link %}
+
+Open →
+
+{% else %}
+
+Mark as read →
+
+{% endif %}
+
+</a>
+
+
+</div>
+
+
+{% if not notification.is_read %}
+
+<span class="unread-dot"></span>
+
+{% endif %}
+
+
+</article>
+
+
+{% empty %}
+
+
+<div class="no-notifications">
+
+
+<i class="fa-regular fa-bell"></i>
+
+
+<h2>
+No Notifications Yet
+</h2>
+
+
+<p>
+
+Smart Rescue offers, collection reminders
+and important MealMate updates will appear here.
+
+</p>
+
+
+</div>
+
+
+{% endfor %}
+
+
+</section>
+
+
+</main>
+
+
+{% endblock %}

@@ -1,0 +1,1255 @@
+{% extends 'app_base.html' %}
+{% load extension_tags %}
+
+
+{% block title %}
+Business Dashboard | MealMate
+{% endblock %}
+
+
+{% block business_nav_class %}
+dashboard-active-link
+{% endblock %}
+
+
+{% block content %}
+
+
+<style>
+
+.pickup-verification-box {
+    display: flex;
+    gap: 7px;
+    align-items: center;
+}
+
+.pickup-code-input {
+    width: 125px;
+    padding: 8px 9px;
+    border: 1px solid #ccd9ce;
+    border-radius: 8px;
+    outline: none;
+    font-family: monospace;
+    font-size: 13px;
+    font-weight: 800;
+    text-transform: uppercase;
+}
+
+.pickup-code-input:focus {
+    border-color: #247b38;
+    box-shadow: 0 0 0 3px rgba(36, 123, 56, 0.08);
+}
+
+.verify-code-button {
+    border: 0;
+    border-radius: 8px;
+    padding: 8px 11px;
+    background: #247b38;
+    color: white;
+    cursor: pointer;
+    font-size: 12px;
+    font-weight: 800;
+    white-space: nowrap;
+}
+
+.verify-code-button:hover {
+    background: #1d652f;
+}
+
+.collection-help {
+    display: block;
+    margin-top: 5px;
+    color: #7b8980;
+    font-size: 10px;
+    line-height: 1.4;
+}
+
+.collected-time {
+    display: block;
+    margin-top: 4px;
+    color: #247b38;
+    font-size: 11px;
+}
+
+
+/* =========================================================
+   EXTENSION
+========================================================= */
+
+.status-expired {
+    background: #f7e7e7 !important;
+    color: #a14848 !important;
+}
+
+.status-extension {
+    background: #fff0d3 !important;
+    color: #94610d !important;
+}
+
+.status-extended {
+    background: #e8f6eb !important;
+    color: #168447 !important;
+}
+
+
+.expired-business-box {
+    display: grid;
+    gap: 9px;
+}
+
+
+.expired-business-label {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+
+    color: #a14848;
+
+    font-size: 12px;
+    font-weight: 900;
+}
+
+
+.extension-availability-note {
+    display: block;
+
+    color: #7b8980;
+
+    font-size: 10px;
+    line-height: 1.4;
+}
+
+
+.extension-buttons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+}
+
+
+.extension-buttons form {
+    margin: 0;
+}
+
+
+.extension-button {
+    border: 1px solid #b9ddc2;
+    border-radius: 8px;
+
+    padding: 8px 10px;
+
+    background: #ecf7ee;
+
+    color: #168447;
+
+    cursor: pointer;
+
+    font-size: 11px;
+    font-weight: 900;
+}
+
+
+.extension-button:hover {
+    background: #dff2e3;
+}
+
+
+.extension-waiting {
+    display: grid;
+    gap: 5px;
+
+    color: #94610d;
+
+    font-size: 12px;
+    font-weight: 800;
+}
+
+
+.extension-confirmed {
+    display: block;
+
+    margin-top: 6px;
+
+    color: #168447;
+
+    font-size: 11px;
+    font-weight: 800;
+}
+
+
+.extension-declined {
+    color: #a14848;
+
+    font-size: 12px;
+    font-weight: 900;
+}
+
+
+.extension-closed {
+    display: grid;
+    gap: 5px;
+}
+
+
+.extension-closed strong {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+
+    color: #7c5555;
+
+    font-size: 12px;
+}
+
+
+.extension-closed small {
+    color: #8a7b7b;
+
+    font-size: 10px;
+    line-height: 1.45;
+}
+
+
+</style>
+
+
+{% business_active_reservations current_user.id as live_reserved_count %}
+
+
+<main class="business-dashboard-page">
+
+
+<section class="business-welcome dashboard-welcome-row">
+
+<div>
+
+<p class="dashboard-label">
+MEALMATE BUSINESS
+</p>
+
+<h1>
+Welcome, {{ current_user.full_name }}
+</h1>
+
+<p>
+Share surplus food and manage
+collections from one place.
+</p>
+
+</div>
+
+</section>
+
+
+<section class="business-stats">
+
+
+<div class="stat-box">
+
+<i class="fa-solid fa-bowl-food"></i>
+
+<span>
+
+<strong>
+{{ stats.active_posts }}
+</strong>
+
+Active posts
+
+</span>
+
+</div>
+
+
+<div class="stat-box">
+
+<i class="fa-solid fa-layer-group"></i>
+
+<span>
+
+<strong>
+{{ stats.available_items }}
+</strong>
+
+Portions left
+
+</span>
+
+</div>
+
+
+<div class="stat-box">
+
+<i class="fa-solid fa-bag-shopping"></i>
+
+<span>
+
+<strong>
+{{ live_reserved_count }}
+</strong>
+
+Reserved
+
+</span>
+
+</div>
+
+
+<div class="stat-box">
+
+<i class="fa-solid fa-circle-check"></i>
+
+<span>
+
+<strong>
+{{ stats.collected }}
+</strong>
+
+Collected
+
+</span>
+
+</div>
+
+
+</section>
+
+
+<div class="business-dashboard-grid">
+
+
+<section class="business-panel">
+
+
+<div class="business-panel-header">
+
+<p class="dashboard-label">
+SHARE FOOD
+</p>
+
+<h2>
+Create Food Post
+</h2>
+
+<p>
+Tell people what food is
+available and when they
+can collect it.
+</p>
+
+</div>
+
+
+<form
+    method="POST"
+    class="food-post-form"
+    novalidate
+>
+
+{% csrf_token %}
+
+
+{% if form.non_field_errors %}
+
+<div class="form-error">
+
+{{ form.non_field_errors }}
+
+</div>
+
+{% endif %}
+
+
+<div class="business-form-group">
+
+<label>
+Food name
+</label>
+
+{{ form.food_name }}
+
+{{ form.food_name.errors }}
+
+</div>
+
+
+<div class="business-form-group">
+
+<label>
+Description
+</label>
+
+{{ form.description }}
+
+{{ form.description.errors }}
+
+</div>
+
+
+<div class="business-form-group">
+
+<label>
+Quantity
+</label>
+
+{{ form.quantity }}
+
+{{ form.quantity.errors }}
+
+</div>
+
+
+<div class="business-form-group">
+
+<label>
+Pickup address
+</label>
+
+{{ form.pickup_address }}
+
+{{ form.pickup_address.errors }}
+
+<small>
+
+Use a full address or postcode
+so Google Maps can find it accurately.
+
+</small>
+
+</div>
+
+
+<div class="business-time-grid">
+
+
+<div class="business-form-group">
+
+<label>
+Pickup starts
+</label>
+
+{{ form.pickup_start }}
+
+{{ form.pickup_start.errors }}
+
+</div>
+
+
+<div class="business-form-group">
+
+<label>
+Pickup ends
+</label>
+
+{{ form.pickup_end }}
+
+{{ form.pickup_end.errors }}
+
+</div>
+
+
+</div>
+
+
+<button
+    type="submit"
+    class="post-food-button"
+>
+
+<i class="fa-solid fa-plus"></i>
+
+Post Food
+
+</button>
+
+
+</form>
+
+
+</section>
+
+
+<section class="business-panel">
+
+
+<div class="business-panel-header">
+
+<p class="dashboard-label">
+YOUR LISTINGS
+</p>
+
+<h2>
+Food Posts
+</h2>
+
+<p>
+Edit, pause or remove
+food you have shared.
+</p>
+
+</div>
+
+
+<div class="business-post-list">
+
+
+{% for food in my_food_posts %}
+
+
+<article class="business-food-card">
+
+
+<div class="business-food-top">
+
+
+<span
+    class="business-food-status status-{{ food.status }}"
+>
+
+{{ food.status|title }}
+
+</span>
+
+
+<span class="business-food-quantity">
+
+{{ food.quantity }} left
+
+</span>
+
+
+</div>
+
+
+<h3>
+{{ food.food_name }}
+</h3>
+
+
+{% if food.description %}
+
+<p>
+{{ food.description|truncatechars:110 }}
+</p>
+
+{% endif %}
+
+
+<div class="business-food-details">
+
+
+<span>
+
+<strong>
+Pickup:
+</strong>
+
+{{ food.pickup_address }}
+
+</span>
+
+
+<span>
+
+<strong>
+Window:
+</strong>
+
+{{ food.pickup_start|date:"d M, H:i" }}
+
+–
+
+{{ food.pickup_end|date:"H:i" }}
+
+</span>
+
+
+</div>
+
+
+<div class="business-card-actions">
+
+
+<a
+    href="{% url 'business_food_edit' food.id %}"
+    class="small-action edit"
+>
+
+<i class="fa-solid fa-pen"></i>
+
+Edit
+
+</a>
+
+
+<form
+    method="POST"
+    action="{% url 'business_food_toggle' food.id %}"
+>
+
+{% csrf_token %}
+
+
+<button
+    class="small-action pause"
+    type="submit"
+>
+
+<i
+    class="fa-solid {% if food.status == 'available' %}fa-pause{% else %}fa-play{% endif %}"
+></i>
+
+
+{% if food.status == 'available' %}
+
+Pause
+
+{% else %}
+
+Reactivate
+
+{% endif %}
+
+</button>
+
+
+</form>
+
+
+<form
+    method="POST"
+    action="{% url 'business_food_delete' food.id %}"
+    onsubmit="return confirm('Delete this food post?');"
+>
+
+{% csrf_token %}
+
+
+<button
+    class="small-action delete"
+    type="submit"
+>
+
+<i class="fa-solid fa-trash"></i>
+
+Delete
+
+</button>
+
+
+</form>
+
+
+</div>
+
+
+</article>
+
+
+{% empty %}
+
+
+<div class="business-empty">
+
+<h3>
+No food posts yet
+</h3>
+
+<p>
+Create your first food post
+using the form.
+</p>
+
+</div>
+
+
+{% endfor %}
+
+
+</div>
+
+
+</section>
+
+
+</div>
+
+
+<section class="business-panel reservation-management-panel">
+
+
+<div class="business-panel-header">
+
+<p class="dashboard-label">
+COLLECTIONS
+</p>
+
+<h2>
+Reservations
+</h2>
+
+<p>
+When a customer arrives,
+ask them for their MealMate pickup code
+and enter it below.
+</p>
+
+</div>
+
+
+<div class="business-reservation-table-wrap">
+
+
+<table class="business-reservation-table">
+
+
+<thead>
+
+<tr>
+
+<th>
+User
+</th>
+
+<th>
+Food
+</th>
+
+<th>
+Reserved
+</th>
+
+<th>
+Status
+</th>
+
+<th>
+Pickup Verification
+</th>
+
+</tr>
+
+</thead>
+
+
+<tbody>
+
+
+{% for reservation in reservations %}
+
+
+{% reservation_lifecycle reservation as lifecycle %}
+
+
+<tr>
+
+
+<td>
+
+
+{% if reservation.user %}
+
+
+<strong>
+
+{{ reservation.user.full_name }}
+
+</strong>
+
+
+<small>
+
+{{ reservation.user.email }}
+
+</small>
+
+
+{% else %}
+
+Unknown user
+
+{% endif %}
+
+
+</td>
+
+
+<td>
+
+
+{% if reservation.food %}
+
+{{ reservation.food.food_name }}
+
+{% else %}
+
+Deleted listing
+
+{% endif %}
+
+
+</td>
+
+
+<td>
+
+{{ reservation.reserved_at|date:"d M Y, H:i" }}
+
+</td>
+
+
+<td>
+
+
+<span
+    class="reservation-status status-{{ lifecycle.css }}"
+>
+
+{{ lifecycle.label }}
+
+</span>
+
+
+{% if lifecycle.state == "extended" %}
+
+
+<span class="extension-confirmed">
+
+<i class="fa-solid fa-clock"></i>
+
+Extended until
+
+{{ lifecycle.deadline|date:"H:i" }}
+
+</span>
+
+
+{% endif %}
+
+
+{% if reservation.status == "collected" and reservation.collected_at %}
+
+
+<span class="collected-time">
+
+{{ reservation.collected_at|date:"d M Y, H:i" }}
+
+</span>
+
+
+{% endif %}
+
+
+</td>
+
+
+<td>
+
+
+<!-- =====================================================
+     NORMAL ACTIVE RESERVATION
+===================================================== -->
+
+{% if lifecycle.state == "active" %}
+
+
+<form
+    method="POST"
+    action="{% url 'business_verify_pickup_code' reservation.id %}"
+>
+
+{% csrf_token %}
+
+
+<div class="pickup-verification-box">
+
+
+<input
+    type="text"
+    name="pickup_code"
+    class="pickup-code-input"
+    placeholder="MM-1234"
+    maxlength="7"
+    autocomplete="off"
+    required
+>
+
+
+<button
+    class="verify-code-button"
+    type="submit"
+>
+
+<i class="fa-solid fa-check"></i>
+
+Verify
+
+</button>
+
+
+</div>
+
+
+<small class="collection-help">
+
+Ask the customer for the code
+shown in their My Reservations page.
+
+</small>
+
+
+</form>
+
+
+<form
+    method="POST"
+    action="{% url 'business_reservation_update' reservation.id 'cancelled' %}"
+    onsubmit="return confirm('Cancel this reservation and restore the quantity?');"
+    style="margin-top:8px;"
+>
+
+{% csrf_token %}
+
+
+<button
+    class="danger-button compact"
+    type="submit"
+>
+
+Cancel Reservation
+
+</button>
+
+
+</form>
+
+
+
+<!-- =====================================================
+     CUSTOMER ACCEPTED EXTENSION
+===================================================== -->
+
+{% elif lifecycle.state == "extended" %}
+
+
+<form
+    method="POST"
+    action="{% url 'business_verify_pickup_code' reservation.id %}"
+>
+
+{% csrf_token %}
+
+
+<div class="pickup-verification-box">
+
+
+<input
+    type="text"
+    name="pickup_code"
+    class="pickup-code-input"
+    placeholder="MM-1234"
+    maxlength="7"
+    autocomplete="off"
+    required
+>
+
+
+<button
+    class="verify-code-button"
+    type="submit"
+>
+
+<i class="fa-solid fa-check"></i>
+
+Verify
+
+</button>
+
+
+</div>
+
+
+<small class="collection-help">
+
+Customer confirmed the extension.
+
+<br>
+
+New deadline:
+
+<strong>
+{{ lifecycle.deadline|date:"H:i" }}
+</strong>
+
+</small>
+
+
+</form>
+
+
+
+<!-- =====================================================
+     EXPIRED BUT BUSINESS STILL HAS 10 MINUTES
+===================================================== -->
+
+{% elif lifecycle.state == "expired" %}
+
+
+<div class="expired-business-box">
+
+
+<div class="expired-business-label">
+
+<i class="fa-solid fa-clock"></i>
+
+Pickup window ended
+
+</div>
+
+
+<small class="extension-availability-note">
+
+You can offer the customer a short extension
+until
+
+<strong>
+
+{{ lifecycle.extension_window_deadline|date:"H:i" }}
+
+</strong>.
+
+</small>
+
+
+<div class="extension-buttons">
+
+
+<form
+    method="POST"
+    action="{% url 'business_extend_reservation' reservation.id 5 %}"
+>
+
+{% csrf_token %}
+
+
+<button
+    type="submit"
+    class="extension-button"
+>
+
++5 min
+
+</button>
+
+
+</form>
+
+
+<form
+    method="POST"
+    action="{% url 'business_extend_reservation' reservation.id 10 %}"
+>
+
+{% csrf_token %}
+
+
+<button
+    type="submit"
+    class="extension-button"
+>
+
++10 min
+
+</button>
+
+
+</form>
+
+
+<form
+    method="POST"
+    action="{% url 'business_extend_reservation' reservation.id 20 %}"
+>
+
+{% csrf_token %}
+
+
+<button
+    type="submit"
+    class="extension-button"
+>
+
++20 min
+
+</button>
+
+
+</form>
+
+
+</div>
+
+
+</div>
+
+
+
+<!-- =====================================================
+     EXTENSION OFFERED
+===================================================== -->
+
+{% elif lifecycle.state == "extension_offered" %}
+
+
+<div class="extension-waiting">
+
+
+<span>
+
+<i class="fa-solid fa-clock"></i>
+
+Extension offered
+
+</span>
+
+
+<small>
+
+Waiting for customer response.
+
+<br>
+
+Extension expires at
+
+<strong>
+
+{{ lifecycle.deadline|date:"H:i" }}
+
+</strong>.
+
+</small>
+
+
+</div>
+
+
+
+<!-- =====================================================
+     CUSTOMER DECLINED
+===================================================== -->
+
+{% elif lifecycle.state == "extension_declined" %}
+
+
+<div class="extension-declined">
+
+<i class="fa-solid fa-circle-xmark"></i>
+
+Customer can't make it
+
+</div>
+
+
+
+<!-- =====================================================
+     EXTENSION PERIOD CLOSED
+===================================================== -->
+
+{% elif lifecycle.state == "extension_closed" %}
+
+
+<div class="extension-closed">
+
+
+<strong>
+
+<i class="fa-solid fa-lock"></i>
+
+Extension Closed
+
+</strong>
+
+
+<small>
+
+The 10-minute extension period
+has ended.
+
+</small>
+
+
+</div>
+
+
+
+<!-- =====================================================
+     COLLECTED
+===================================================== -->
+
+{% elif lifecycle.state == "collected" %}
+
+
+<span
+    style="
+        color:#247b38;
+        font-weight:700;
+    "
+>
+
+<i class="fa-solid fa-circle-check"></i>
+
+Code verified
+
+</span>
+
+
+
+{% else %}
+
+—
+
+{% endif %}
+
+
+</td>
+
+
+</tr>
+
+
+{% empty %}
+
+
+<tr>
+
+<td
+    colspan="5"
+    class="table-empty"
+>
+
+No reservations yet.
+
+</td>
+
+</tr>
+
+
+{% endfor %}
+
+
+</tbody>
+
+
+</table>
+
+
+</div>
+
+
+</section>
+
+
+</main>
+
+
+{% endblock %}

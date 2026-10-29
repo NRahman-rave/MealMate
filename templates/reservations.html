@@ -1,0 +1,1408 @@
+{% extends 'app_base.html' %}
+
+{% load rescue_history_tags %}
+{% load extension_tags %}
+
+
+{% block title %}
+My Reservations | MealMate
+{% endblock %}
+
+
+{% block reservations_nav_class %}
+dashboard-active-link
+{% endblock %}
+
+
+{% block content %}
+
+
+<style>
+
+.reservations-page {
+    padding: 45px 6%;
+    min-height: calc(100vh - 75px);
+    background: #f7faf7;
+}
+
+.reservation-heading {
+    margin-bottom: 32px;
+}
+
+.reservation-heading h1 {
+    margin: 5px 0 10px;
+    color: #142a38;
+    font-size: 42px;
+}
+
+.reservation-heading p {
+    max-width: 720px;
+    color: #68787f;
+    line-height: 1.6;
+}
+
+.reservation-top-actions {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-top: 20px;
+}
+
+.rescue-offers-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 11px 17px;
+    border-radius: 9px;
+    background: #fff4df;
+    border: 1px solid #f0d39e;
+    color: #9a6310;
+    text-decoration: none;
+    font-weight: 800;
+}
+
+.reservation-list {
+    display: grid;
+    gap: 20px;
+}
+
+.reservation-card {
+    display: grid;
+    grid-template-columns: 1fr 260px;
+    gap: 28px;
+    padding: 27px;
+    background: #ffffff;
+    border: 1px solid #dfe8e1;
+    border-radius: 18px;
+}
+
+.reservation-status {
+    display: inline-flex;
+    margin-bottom: 15px;
+    padding: 6px 12px;
+    border-radius: 30px;
+    font-size: 11px;
+    font-weight: 900;
+}
+
+.status-reserved {
+    background: #e7f5ea;
+    color: #168447;
+}
+
+.status-extended {
+    background: #e7f5ea;
+    color: #168447;
+}
+
+.status-extension {
+    background: #fff1d4;
+    color: #94610d;
+}
+
+.status-expired {
+    background: #f7e8e8;
+    color: #a44848;
+}
+
+.status-collected {
+    background: #e8eefc;
+    color: #3459a5;
+}
+
+.status-cancelled {
+    background: #f5eeee;
+    color: #9a5050;
+}
+
+.status-transferred {
+    background: #fff1d7;
+    color: #94610d;
+}
+
+.reservation-main h2 {
+    margin-bottom: 7px;
+    color: #142a38;
+}
+
+.food-business {
+    color: #168447;
+    font-weight: 800;
+}
+
+.reservation-meta {
+    display: grid;
+    gap: 9px;
+    margin-top: 17px;
+}
+
+.reservation-meta span {
+    display: flex;
+    gap: 8px;
+    color: #66777e;
+    font-size: 13px;
+}
+
+.reservation-meta i {
+    color: #168447;
+}
+
+.pickup-code-box {
+    margin-top: 20px;
+    max-width: 420px;
+    padding: 18px 20px;
+    border: 1px solid #bcdabd;
+    border-radius: 14px;
+    background: #f1f9ef;
+}
+
+.pickup-code-label {
+    display: block;
+    margin-bottom: 6px;
+    color: #526159;
+    font-size: 12px;
+    font-weight: 800;
+    text-transform: uppercase;
+}
+
+.pickup-code-value {
+    display: block;
+    color: #247b38;
+    font-size: 29px;
+    font-weight: 900;
+    letter-spacing: 3px;
+    font-family: monospace;
+}
+
+.pickup-code-help {
+    display: block;
+    margin-top: 8px;
+    color: #66756d;
+    font-size: 12px;
+    line-height: 1.5;
+}
+
+
+/* =========================================================
+   CHECK-IN
+========================================================= */
+
+.collection-checkin {
+    margin-top: 22px;
+    max-width: 520px;
+    padding: 18px;
+    border: 1px solid #eed7a8;
+    border-radius: 14px;
+    background: #fffaf0;
+}
+
+.collection-checkin.confirmed {
+    border-color: #b8ddc2;
+    background: #f2faf4;
+}
+
+.collection-checkin-title {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 6px;
+    color: #76520f;
+    font-weight: 900;
+}
+
+.collection-checkin.confirmed
+.collection-checkin-title {
+    color: #168447;
+}
+
+.collection-checkin p {
+    margin: 0 0 14px;
+    color: #796b51;
+    font-size: 13px;
+    line-height: 1.55;
+}
+
+.checkin-actions {
+    display: flex;
+    gap: 9px;
+    flex-wrap: wrap;
+    align-items: center;
+}
+
+.checkin-actions form {
+    margin: 0;
+}
+
+.confirm-coming-button {
+    border: 0;
+    border-radius: 8px;
+    padding: 10px 14px;
+    background: #168447;
+    color: #ffffff;
+    font-weight: 800;
+    cursor: pointer;
+}
+
+.confirmed-button {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    border: 1px solid #b9ddc2;
+    border-radius: 8px;
+    padding: 10px 14px;
+    background: #e8f6eb;
+    color: #168447;
+    font-weight: 900;
+}
+
+.cant-collect-button {
+    border: 1px solid #e2bb6c;
+    border-radius: 8px;
+    padding: 10px 14px;
+    background: #ffffff;
+    color: #94610d;
+    font-weight: 800;
+    cursor: pointer;
+}
+
+.interested-again-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+    padding: 10px 14px;
+    border-radius: 8px;
+    border: 1px solid #b8ddc2;
+    background: #eaf7ed;
+    color: #168447;
+    text-decoration: none;
+    font-weight: 900;
+}
+
+
+/* =========================================================
+   EXPIRED
+========================================================= */
+
+.expired-card-message {
+    margin-top: 20px;
+    max-width: 520px;
+    padding: 18px;
+    border: 1px solid #e6caca;
+    border-radius: 14px;
+    background: #fff5f5;
+}
+
+.expired-card-message strong {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: #a44848;
+}
+
+.expired-card-message p {
+    margin: 7px 0 0;
+    color: #786565;
+    font-size: 13px;
+    line-height: 1.5;
+}
+
+
+/* =========================================================
+   EXTENDED
+========================================================= */
+
+.extended-box {
+    margin-top: 20px;
+    max-width: 520px;
+    padding: 18px;
+    border: 1px solid #b8ddc2;
+    border-radius: 14px;
+    background: #f1faf3;
+}
+
+.extended-box strong {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    color: #168447;
+}
+
+.extended-box p {
+    margin: 8px 0 0;
+    color: #607466;
+    font-size: 13px;
+}
+
+
+/* =========================================================
+   EXTENSION POPUP
+========================================================= */
+
+.extension-modal {
+    position: fixed;
+    inset: 0;
+    z-index: 9999;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    padding: 20px;
+
+    background: rgba(9, 25, 18, 0.58);
+    backdrop-filter: blur(5px);
+}
+
+.extension-modal-card {
+    width: min(520px, 100%);
+    padding: 30px;
+    border-radius: 20px;
+    background: #ffffff;
+    box-shadow: 0 25px 80px rgba(0, 0, 0, 0.2);
+}
+
+.extension-modal-icon {
+    width: 52px;
+    height: 52px;
+
+    display: grid;
+    place-items: center;
+
+    margin-bottom: 18px;
+
+    border-radius: 50%;
+
+    background: #e9f6ec;
+    color: #168447;
+
+    font-size: 21px;
+}
+
+.extension-modal-card h2 {
+    margin-bottom: 9px;
+    color: #142a38;
+}
+
+.extension-modal-card p {
+    color: #68787f;
+    line-height: 1.6;
+}
+
+.extension-time-box {
+    margin: 18px 0;
+    padding: 14px;
+    border-radius: 12px;
+    background: #f1f8f2;
+    color: #168447;
+    font-weight: 900;
+}
+
+.extension-modal-actions {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+}
+
+.extension-coming-button {
+    width: 100%;
+    border: 0;
+    border-radius: 10px;
+    padding: 13px;
+    background: #168447;
+    color: #ffffff;
+    cursor: pointer;
+    font-weight: 900;
+}
+
+.extension-cant-button {
+    width: 100%;
+    border: 1px solid #e1c4c4;
+    border-radius: 10px;
+    padding: 13px;
+    background: #fffafa;
+    color: #a14848;
+    cursor: pointer;
+    font-weight: 900;
+}
+
+
+/* =========================================================
+   ACTIONS
+========================================================= */
+
+.reservation-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 9px;
+}
+
+.maps-button,
+.secondary-app-button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+    padding: 11px;
+    border-radius: 9px;
+    text-decoration: none;
+    font-weight: 800;
+}
+
+.maps-button {
+    background: #168447;
+    color: white;
+}
+
+.secondary-app-button {
+    border: 1px solid #d6e1d8;
+    background: #ffffff;
+    color: #168447;
+}
+
+.pass-rescue-button {
+    width: 100%;
+    border: 1px solid #f0c76f;
+    border-radius: 9px;
+    padding: 12px 15px;
+    background: #fff7e8;
+    color: #9a6310;
+    font-weight: 800;
+    cursor: pointer;
+}
+
+.danger-button {
+    width: 100%;
+    border: 1px solid #e5c5c5;
+    border-radius: 9px;
+    padding: 11px 15px;
+    background: #fffafa;
+    color: #a84e4e;
+    font-weight: 800;
+    cursor: pointer;
+}
+
+.no-longer-available {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    padding: 10px 14px;
+    border-radius: 8px;
+    background: #f8eeee;
+    color: #a24c4c;
+    font-weight: 900;
+}
+
+
+/* =========================================================
+   RESCUE HISTORY
+========================================================= */
+
+.rescue-history-heading {
+    margin: 45px 0 20px;
+}
+
+.transferred-card {
+    border-color: #ead9b8;
+    background: #fffdf8;
+}
+
+.transferred-message {
+    margin-top: 20px;
+    padding: 17px;
+    border-radius: 13px;
+    border: 1px solid #efd49b;
+    background: #fff7e8;
+}
+
+.transferred-message strong {
+    color: #94610d;
+}
+
+.transferred-message p {
+    margin: 7px 0 0;
+    color: #796b51;
+    font-size: 13px;
+}
+
+
+@media (max-width: 800px) {
+
+    .reservation-card {
+        grid-template-columns: 1fr;
+    }
+
+}
+
+@media (max-width: 550px) {
+
+    .reservations-page {
+        padding: 35px 20px;
+    }
+
+    .reservation-heading h1 {
+        font-size: 34px;
+    }
+
+    .checkin-actions {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .extension-modal-actions {
+        grid-template-columns: 1fr;
+    }
+
+}
+
+</style>
+
+
+<main class="reservations-page">
+
+
+<section class="reservation-heading">
+
+<p class="dashboard-label">
+YOUR COLLECTIONS
+</p>
+
+<h1>
+My Reservations
+</h1>
+
+<p>
+Manage upcoming collections. If your plans change,
+MealMate can offer your reservation to another
+suitable user before the pickup window ends.
+</p>
+
+
+<div class="reservation-top-actions">
+
+<a
+    href="{% url 'rescue_offers' %}"
+    class="rescue-offers-link"
+>
+
+<i class="fa-solid fa-bolt"></i>
+
+Rescue Opportunities
+
+</a>
+
+</div>
+
+</section>
+
+
+<section class="reservation-list">
+
+
+{% for reservation in reservations %}
+
+
+{% reservation_lifecycle reservation as lifecycle %}
+
+
+<article class="reservation-card">
+
+
+<div class="reservation-main">
+
+
+<div
+    class="reservation-status status-{{ lifecycle.css }}"
+>
+
+{{ lifecycle.label }}
+
+</div>
+
+
+{% if reservation.food %}
+
+
+<h2>
+{{ reservation.food.food_name }}
+</h2>
+
+
+<p class="food-business">
+
+<i class="fa-solid fa-store"></i>
+
+{{ reservation.business_name }}
+
+</p>
+
+
+<div class="reservation-meta">
+
+
+<span>
+
+<i class="fa-solid fa-location-dot"></i>
+
+{{ reservation.food.pickup_address }}
+
+</span>
+
+
+<span>
+
+<i class="fa-solid fa-clock"></i>
+
+Original pickup:
+
+{{ reservation.food.pickup_start|date:"d M Y, H:i" }}
+
+–
+
+{{ reservation.food.pickup_end|date:"H:i" }}
+
+</span>
+
+
+<span>
+
+<i class="fa-solid fa-calendar-check"></i>
+
+Reserved:
+
+{{ reservation.reserved_at|date:"d M Y, H:i" }}
+
+</span>
+
+
+</div>
+
+
+<!-- =====================================================
+     NORMAL ACTIVE RESERVATION
+===================================================== -->
+
+{% if lifecycle.state == "active" %}
+
+
+<div class="pickup-code-box">
+
+<span class="pickup-code-label">
+Your Pickup Code
+</span>
+
+<strong class="pickup-code-value">
+
+{{ reservation.pickup_code }}
+
+</strong>
+
+<span class="pickup-code-help">
+
+Give this code to the business when you collect
+your food.
+
+</span>
+
+</div>
+
+
+{% if reservation.collection_intent == "coming" %}
+
+
+<div class="collection-checkin confirmed">
+
+<div class="collection-checkin-title">
+
+<i class="fa-solid fa-circle-check"></i>
+
+Collection Confirmed
+
+</div>
+
+<p>
+You've confirmed that you're coming
+to collect this meal.
+</p>
+
+<div class="checkin-actions">
+
+<div class="confirmed-button">
+
+<i class="fa-solid fa-check"></i>
+
+Confirmed
+
+</div>
+
+
+<form
+    method="POST"
+    action="{% url 'collection_checkin' reservation.id 'cant_collect' %}"
+>
+
+{% csrf_token %}
+
+<button
+    type="submit"
+    class="cant-collect-button"
+>
+
+I Can't Make It
+
+</button>
+
+</form>
+
+</div>
+
+</div>
+
+
+{% elif reservation.collection_intent == "cant_collect" %}
+
+
+<div class="collection-checkin">
+
+<div class="collection-checkin-title">
+
+<i class="fa-solid fa-heart"></i>
+
+Thanks for letting us know
+
+</div>
+
+<p>
+MealMate is trying to find another suitable
+collector through Rescue Relay.
+</p>
+
+<a
+    href="{% url 'food_detail' reservation.food.id %}"
+    class="interested-again-button"
+>
+
+<i class="fa-solid fa-rotate-left"></i>
+
+Are you interested again?
+
+</a>
+
+</div>
+
+
+{% else %}
+
+
+<div class="collection-checkin">
+
+<div class="collection-checkin-title">
+
+<i class="fa-solid fa-circle-question"></i>
+
+Are you still collecting this meal?
+
+</div>
+
+<p>
+Confirm your plans so MealMate can prevent
+the food from being wasted if something changes.
+</p>
+
+
+<div class="checkin-actions">
+
+
+<form
+    method="POST"
+    action="{% url 'collection_checkin' reservation.id 'coming' %}"
+>
+
+{% csrf_token %}
+
+<button
+    type="submit"
+    class="confirm-coming-button"
+>
+
+<i class="fa-solid fa-check"></i>
+
+Yes, I'm Coming
+
+</button>
+
+</form>
+
+
+<form
+    method="POST"
+    action="{% url 'collection_checkin' reservation.id 'cant_collect' %}"
+>
+
+{% csrf_token %}
+
+<button
+    type="submit"
+    class="cant-collect-button"
+>
+
+I Can't Make It
+
+</button>
+
+</form>
+
+
+</div>
+
+</div>
+
+
+{% endif %}
+
+
+<!-- =====================================================
+     BUSINESS EXTENSION OFFER
+===================================================== -->
+
+{% elif lifecycle.state == "extension_offered" %}
+
+
+<div class="expired-card-message">
+
+<strong>
+
+<i class="fa-solid fa-clock"></i>
+
+Original Pickup Window Ended
+
+</strong>
+
+<p>
+The business has offered you extra time
+to collect this meal.
+</p>
+
+</div>
+
+
+<div class="extension-modal">
+
+
+<div class="extension-modal-card">
+
+
+<div class="extension-modal-icon">
+
+<i class="fa-solid fa-clock"></i>
+
+</div>
+
+
+<h2>
+Pickup Window Extended
+</h2>
+
+
+<p>
+
+Your original pickup window ended, but
+<strong>{{ reservation.business_name }}</strong>
+would still like you to collect your meal.
+
+</p>
+
+
+<div class="extension-time-box">
+
+<i class="fa-solid fa-hourglass-half"></i>
+
+Extra {{ lifecycle.extension_minutes }} minutes
+
+<br>
+
+New deadline:
+{{ lifecycle.deadline|date:"H:i" }}
+
+</div>
+
+
+<p>
+Can you still make it?
+</p>
+
+
+<div class="extension-modal-actions">
+
+
+<form
+    method="POST"
+    action="{% url 'extension_response' reservation.id 'coming' %}"
+>
+
+{% csrf_token %}
+
+<button
+    type="submit"
+    class="extension-coming-button"
+>
+
+<i class="fa-solid fa-check"></i>
+
+I'm Coming
+
+</button>
+
+</form>
+
+
+<form
+    method="POST"
+    action="{% url 'extension_response' reservation.id 'cant_collect' %}"
+>
+
+{% csrf_token %}
+
+<button
+    type="submit"
+    class="extension-cant-button"
+>
+
+<i class="fa-solid fa-xmark"></i>
+
+I Can't Make It
+
+</button>
+
+</form>
+
+
+</div>
+
+
+</div>
+
+
+</div>
+
+
+<!-- =====================================================
+     EXTENSION ACCEPTED
+===================================================== -->
+
+{% elif lifecycle.state == "extended" %}
+
+
+<div class="pickup-code-box">
+
+<span class="pickup-code-label">
+Your Pickup Code
+</span>
+
+<strong class="pickup-code-value">
+
+{{ reservation.pickup_code }}
+
+</strong>
+
+<span class="pickup-code-help">
+
+Your pickup code is active again during
+the extended collection window.
+
+</span>
+
+</div>
+
+
+<div class="extended-box">
+
+<strong>
+
+<i class="fa-solid fa-circle-check"></i>
+
+Extension Confirmed
+
+</strong>
+
+<p>
+
+You told the business that you're coming.
+
+<br>
+
+New deadline:
+<strong>{{ lifecycle.deadline|date:"H:i" }}</strong>
+
+</p>
+
+</div>
+
+
+<!-- =====================================================
+     USER DECLINED EXTENSION
+===================================================== -->
+
+{% elif lifecycle.state == "extension_declined" %}
+
+
+<div class="expired-card-message">
+
+<strong>
+
+<i class="fa-solid fa-circle-xmark"></i>
+
+Reservation Expired
+
+</strong>
+
+<p>
+
+Thanks for letting the business know that
+you cannot collect during the extended window.
+
+</p>
+
+</div>
+
+
+<!-- =====================================================
+     EXPIRED
+===================================================== -->
+
+{% elif lifecycle.state == "expired" %}
+
+
+<div class="expired-card-message">
+
+<strong>
+
+<i class="fa-solid fa-clock"></i>
+
+Pickup Window Ended
+
+</strong>
+
+<p>
+
+The collection deadline has passed.
+Your pickup code is no longer active.
+
+The business may choose to offer you a
+5, 10 or 20 minute extension.
+
+</p>
+
+</div>
+
+
+<!-- =====================================================
+     COLLECTED
+===================================================== -->
+
+{% elif lifecycle.state == "collected" %}
+
+
+<div class="pickup-code-box">
+
+<span class="pickup-code-label">
+Collection Complete
+</span>
+
+<strong style="color:#247b38;">
+
+<i class="fa-solid fa-circle-check"></i>
+
+Pickup successfully verified
+
+</strong>
+
+
+{% if reservation.collected_at %}
+
+<span class="pickup-code-help">
+
+Collected:
+{{ reservation.collected_at|date:"d M Y, H:i" }}
+
+</span>
+
+{% endif %}
+
+</div>
+
+
+{% endif %}
+
+
+{% endif %}
+
+
+</div>
+
+
+<div class="reservation-actions">
+
+
+{% if reservation.food %}
+
+
+<a
+    href="https://www.google.com/maps/dir/?api=1&destination={{ reservation.food.pickup_address|urlencode }}"
+    target="_blank"
+    rel="noopener noreferrer"
+    class="maps-button"
+>
+
+<i class="fa-solid fa-diamond-turn-right"></i>
+
+Directions
+
+</a>
+
+
+<a
+    href="{% url 'food_detail' reservation.food.id %}"
+    class="secondary-app-button"
+>
+
+View Food
+
+</a>
+
+
+{% endif %}
+
+
+{% if lifecycle.state == "active" %}
+
+
+{% if reservation.collection_intent != "cant_collect" %}
+
+<form
+    method="POST"
+    action="{% url 'create_rescue_request' reservation.id %}"
+>
+
+{% csrf_token %}
+
+<button
+    type="submit"
+    class="pass-rescue-button"
+>
+
+<i class="fa-solid fa-people-arrows"></i>
+
+Pass My Rescue
+
+</button>
+
+</form>
+
+{% endif %}
+
+
+<form
+    method="POST"
+    action="{% url 'cancel_reservation' reservation.id %}"
+>
+
+{% csrf_token %}
+
+<button
+    type="submit"
+    class="danger-button"
+>
+
+Cancel Reservation
+
+</button>
+
+</form>
+
+
+{% endif %}
+
+
+</div>
+
+
+</article>
+
+
+{% empty %}
+
+
+<div class="no-reservations">
+
+<h2>
+No Reservations Yet
+</h2>
+
+<p>
+Find surplus food and make your first reservation.
+</p>
+
+</div>
+
+
+{% endfor %}
+
+
+</section>
+
+
+
+{% original_rescue_history current_user.id as rescue_history %}
+
+
+{% if rescue_history %}
+
+
+<section class="rescue-history-heading">
+
+<p class="dashboard-label">
+RESCUE HISTORY
+</p>
+
+<h2>
+Passed Reservations
+</h2>
+
+</section>
+
+
+<section class="reservation-list">
+
+
+{% for item in rescue_history %}
+
+
+<article class="reservation-card transferred-card">
+
+
+<div class="reservation-main">
+
+
+<div class="reservation-status status-transferred">
+
+Transferred
+
+</div>
+
+
+<h2>
+{{ item.food.food_name }}
+</h2>
+
+
+<p class="food-business">
+
+<i class="fa-solid fa-store"></i>
+
+{{ item.business_name }}
+
+</p>
+
+
+<div class="reservation-meta">
+
+
+<span>
+
+<i class="fa-solid fa-location-dot"></i>
+
+{{ item.food.pickup_address }}
+
+</span>
+
+
+<span>
+
+<i class="fa-solid fa-clock"></i>
+
+Pickup:
+
+{{ item.food.pickup_start|date:"d M Y, H:i" }}
+
+–
+
+{{ item.food.pickup_end|date:"H:i" }}
+
+</span>
+
+
+</div>
+
+
+<div class="transferred-message">
+
+<strong>
+
+<i class="fa-solid fa-circle-check"></i>
+
+Another collector accepted this rescue
+
+</strong>
+
+<p>
+
+Your original reservation was successfully
+transferred to another MealMate user.
+
+</p>
+
+</div>
+
+
+</div>
+
+
+<div class="reservation-actions">
+
+
+{% if item.can_reserve_again %}
+
+<a
+    href="{% url 'food_detail' item.food.id %}"
+    class="interested-again-button"
+>
+
+<i class="fa-solid fa-rotate-left"></i>
+
+Interested Again?
+
+</a>
+
+{% else %}
+
+<div class="no-longer-available">
+
+<i class="fa-solid fa-circle-xmark"></i>
+
+No Longer Available
+
+</div>
+
+{% endif %}
+
+
+</div>
+
+
+</article>
+
+
+{% endfor %}
+
+
+</section>
+
+
+{% endif %}
+
+
+</main>
+
+
+{% endblock %}

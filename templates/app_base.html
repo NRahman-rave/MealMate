@@ -1,0 +1,61 @@
+{% load static %}
+{% load notification_tags %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}MealMate{% endblock %}</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+    <link rel="stylesheet" href="{% static 'style.css' %}">
+    <link rel="stylesheet" href="{% static 'dashboard.css' %}">
+    {% block extra_css %}{% endblock %}
+</head>
+<body class="app-body">
+<header class="dashboard-header">
+    <a href="{% url 'home' %}" class="dashboard-logo">
+        <i class="fa-solid fa-leaf"></i>
+        <span class="logo-meal">Meal</span><span class="logo-mate">Mate</span>
+    </a>
+
+    <nav class="dashboard-nav">
+        {% if current_user.role == 'business' %}
+            <a href="{% url 'business_dashboard' %}" class="{% block business_nav_class %}{% endblock %}">
+                <i class="fa-solid fa-store"></i> Dashboard
+            </a>
+        {% else %}
+            <a href="{% url 'dashboard' %}" class="{% block food_nav_class %}{% endblock %}">
+                <i class="fa-solid fa-magnifying-glass"></i> Find Food
+            </a>
+            <a href="{% url 'my_reservations' %}" class="{% block reservations_nav_class %}{% endblock %}">
+                <i class="fa-solid fa-bag-shopping"></i> My Reservations
+            </a>
+        {% endif %}
+        {% notification_bell %}
+        <a href="{% url 'account' %}" class="{% block account_nav_class %}{% endblock %}">
+            <i class="fa-solid fa-user"></i> My Account
+        </a>
+        <form method="POST" action="{% url 'logout' %}" class="dashboard-logout-form">
+            {% csrf_token %}
+            <button type="submit"><i class="fa-solid fa-right-from-bracket"></i> Logout</button>
+        </form>
+    </nav>
+</header>
+
+{% if messages %}
+<div class="message-stack" aria-live="polite">
+    {% for message in messages %}
+        <div class="app-message {{ message.tags|default:'info' }}">
+            <span>{{ message }}</span>
+            <button type="button" onclick="this.parentElement.remove()" aria-label="Dismiss message">×</button>
+        </div>
+    {% endfor %}
+</div>
+{% endif %}
+
+{% block content %}{% endblock %}
+</body>
+</html>

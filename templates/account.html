@@ -1,0 +1,45 @@
+{% extends 'app_base.html' %}
+{% block title %}My Account | MealMate{% endblock %}
+{% block account_nav_class %}dashboard-active-link{% endblock %}
+{% block content %}
+<main class="account-page">
+    <section class="account-hero">
+        <div class="account-avatar"><i class="fa-solid {% if current_user.role == 'business' %}fa-store{% else %}fa-user{% endif %}"></i></div>
+        <div><p class="dashboard-label">MEALMATE ACCOUNT</p><h1>Welcome, {{ current_user.full_name }}</h1><p>Your MealMate account is connected successfully to the MySQL database.</p></div>
+    </section>
+
+    <section class="account-card">
+        <h2>Account information</h2>
+        <div class="account-info-grid">
+            <div><span>Full name</span><strong>{{ current_user.full_name }}</strong></div>
+            <div><span>Email</span><strong>{{ current_user.email }}</strong></div>
+            <div><span>Phone</span><strong>{{ current_user.phone|default:"Not provided" }}</strong></div>
+            <div><span>Account type</span><strong>{{ current_user.role|title }}</strong></div>
+            <div><span>Status</span><strong class="active-text">{% if current_user.is_active %}Active{% else %}Inactive{% endif %}</strong></div>
+            <div><span>Joined</span><strong>{{ current_user.created_at|date:"d M Y" }}</strong></div>
+        </div>
+    </section>
+
+    <div class="account-settings-grid">
+        <section class="account-card">
+            <h2>Edit profile</h2>
+            <form method="POST" action="{% url 'update_profile' %}" class="account-form">
+                {% csrf_token %}
+                <label>Full name / business name</label>{{ profile_form.full_name }}
+                <label>Phone</label>{{ profile_form.phone }}
+                <button type="submit" class="post-food-button">Save Profile</button>
+            </form>
+        </section>
+        <section class="account-card">
+            <h2>Change password</h2>
+            <form method="POST" action="{% url 'change_password' %}" class="account-form">
+                {% csrf_token %}
+                <label>Current password</label>{{ password_form.current_password }}
+                <label>New password</label>{{ password_form.new_password }}
+                <label>Confirm new password</label>{{ password_form.confirm_password }}
+                <button type="submit" class="post-food-button">Change Password</button>
+            </form>
+        </section>
+    </div>
+</main>
+{% endblock %}

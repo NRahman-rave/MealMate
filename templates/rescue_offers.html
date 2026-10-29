@@ -1,0 +1,901 @@
+{% extends 'app_base.html' %}
+
+{% load rescue_tags %}
+
+
+{% block title %}
+Rescue Opportunities | MealMate
+{% endblock %}
+
+
+{% block content %}
+
+
+<style>
+
+.rescue-page {
+
+    min-height:
+        calc(100vh - 80px);
+
+    padding:
+        50px 6%;
+
+    background:
+        #f7faf7;
+
+}
+
+
+.rescue-container {
+
+    max-width:
+        1050px;
+
+    margin:
+        auto;
+
+}
+
+
+.rescue-heading {
+
+    margin-bottom:
+        30px;
+
+}
+
+
+.rescue-heading-label {
+
+    color:
+        #168447;
+
+    font-size:
+        12px;
+
+    font-weight:
+        900;
+
+    letter-spacing:
+        1.7px;
+
+}
+
+
+.rescue-heading h1 {
+
+    margin:
+        7px 0 9px;
+
+    color:
+        #132936;
+
+    font-size:
+        40px;
+
+}
+
+
+.rescue-heading > p {
+
+    max-width:
+        700px;
+
+    color:
+        #68777f;
+
+    line-height:
+        1.6;
+
+}
+
+
+.rescue-list {
+
+    display:
+        grid;
+
+    gap:
+        20px;
+
+}
+
+
+.rescue-card {
+
+    padding:
+        27px;
+
+    background:
+        #ffffff;
+
+    border:
+        1px solid
+        #dce6de;
+
+    border-radius:
+        18px;
+
+    box-shadow:
+        0 10px 30px
+        rgba(
+            24,
+            65,
+            40,
+            0.05
+        );
+
+}
+
+
+.rescue-card-top {
+
+    display:
+        flex;
+
+    align-items:
+        flex-start;
+
+    justify-content:
+        space-between;
+
+    gap:
+        20px;
+
+}
+
+
+.rescue-card h2 {
+
+    margin:
+        0 0 6px;
+
+    color:
+        #132936;
+
+    font-size:
+        24px;
+
+}
+
+
+.business-name {
+
+    color:
+        #168447;
+
+    font-weight:
+        800;
+
+}
+
+
+.rescue-food-info {
+
+    display:
+        grid;
+
+    grid-template-columns:
+        repeat(
+            2,
+            minmax(
+                0,
+                1fr
+            )
+        );
+
+    gap:
+        12px;
+
+    margin-top:
+        20px;
+
+}
+
+
+.rescue-info-item {
+
+    display:
+        flex;
+
+    align-items:
+        flex-start;
+
+    gap:
+        10px;
+
+    color:
+        #63737a;
+
+    font-size:
+        13px;
+
+}
+
+
+.rescue-info-item i {
+
+    width:
+        16px;
+
+    margin-top:
+        2px;
+
+    color:
+        #168447;
+
+}
+
+
+/* =========================================================
+SMART MATCH
+========================================================= */
+
+.smart-match-explanation {
+
+    margin-top:
+        24px;
+
+    padding:
+        20px;
+
+    border:
+        1px solid
+        #dce9df;
+
+    border-radius:
+        15px;
+
+    background:
+        #f8fcf8;
+
+}
+
+
+.smart-match-score-row {
+
+    display:
+        flex;
+
+    align-items:
+        center;
+
+    justify-content:
+        space-between;
+
+    gap:
+        20px;
+
+}
+
+
+.smart-match-small {
+
+    display:
+        block;
+
+    color:
+        #77867d;
+
+    font-size:
+        10px;
+
+    font-weight:
+        900;
+
+    letter-spacing:
+        1.3px;
+
+}
+
+
+.smart-match-score {
+
+    display:
+        block;
+
+    margin-top:
+        2px;
+
+    color:
+        #168447;
+
+    font-size:
+        35px;
+
+}
+
+
+.reliability-badge {
+
+    display:
+        inline-flex;
+
+    align-items:
+        center;
+
+    gap:
+        7px;
+
+    padding:
+        9px 13px;
+
+    border-radius:
+        30px;
+
+    font-size:
+        12px;
+
+    font-weight:
+        900;
+
+}
+
+
+.reliability-high {
+
+    color:
+        #116b37;
+
+    background:
+        #dff3e5;
+
+}
+
+
+.reliability-good {
+
+    color:
+        #397128;
+
+    background:
+        #e9f3df;
+
+}
+
+
+.reliability-developing {
+
+    color:
+        #976713;
+
+    background:
+        #fff0d1;
+
+}
+
+
+.reliability-low {
+
+    color:
+        #a44444;
+
+    background:
+        #fde5e5;
+
+}
+
+
+.match-reasons {
+
+    margin-top:
+        20px;
+
+}
+
+
+.match-reasons h4 {
+
+    display:
+        flex;
+
+    align-items:
+        center;
+
+    gap:
+        8px;
+
+    margin-bottom:
+        10px;
+
+    color:
+        #273c45;
+
+}
+
+
+.match-reason {
+
+    display:
+        flex;
+
+    align-items:
+        center;
+
+    justify-content:
+        space-between;
+
+    gap:
+        15px;
+
+    padding:
+        10px 0;
+
+    border-bottom:
+        1px solid
+        #e7eee8;
+
+}
+
+
+.match-reason:last-child {
+
+    border-bottom:
+        0;
+
+}
+
+
+.match-reason-left {
+
+    display:
+        flex;
+
+    align-items:
+        center;
+
+    gap:
+        10px;
+
+    color:
+        #64747b;
+
+    font-size:
+        13px;
+
+}
+
+
+.match-reason-left i {
+
+    width:
+        18px;
+
+    color:
+        #168447;
+
+}
+
+
+.match-reason strong {
+
+    color:
+        #168447;
+
+    font-size:
+        12px;
+
+}
+
+
+.reliability-reason {
+
+    margin-top:
+        4px;
+
+    border-radius:
+        9px;
+
+    background:
+        #eef7ef;
+
+    padding-left:
+        10px;
+
+    padding-right:
+        10px;
+
+}
+
+
+/* =========================================================
+BUTTONS
+========================================================= */
+
+.rescue-actions {
+
+    display:
+        flex;
+
+    gap:
+        10px;
+
+    margin-top:
+        22px;
+
+}
+
+
+.accept-rescue-button {
+
+    flex:
+        1;
+
+    padding:
+        13px 17px;
+
+    border:
+        0;
+
+    border-radius:
+        10px;
+
+    background:
+        #168447;
+
+    color:
+        #ffffff;
+
+    font-weight:
+        900;
+
+    cursor:
+        pointer;
+
+}
+
+
+.accept-rescue-button:hover {
+
+    background:
+        #116e3a;
+
+}
+
+
+.decline-rescue-button {
+
+    padding:
+        13px 17px;
+
+    border:
+        1px solid
+        #d7e1d9;
+
+    border-radius:
+        10px;
+
+    background:
+        #ffffff;
+
+    color:
+        #637068;
+
+    font-weight:
+        800;
+
+    cursor:
+        pointer;
+
+}
+
+
+.empty-rescue {
+
+    padding:
+        70px 25px;
+
+    background:
+        #ffffff;
+
+    border:
+        1px dashed
+        #cad8cd;
+
+    border-radius:
+        18px;
+
+    text-align:
+        center;
+
+}
+
+
+.empty-rescue i {
+
+    margin-bottom:
+        15px;
+
+    color:
+        #168447;
+
+    font-size:
+        40px;
+
+}
+
+
+.empty-rescue h2 {
+
+    margin-bottom:
+        8px;
+
+    color:
+        #142a38;
+
+}
+
+
+.empty-rescue p {
+
+    color:
+        #68777f;
+
+}
+
+
+@media (
+    max-width: 650px
+) {
+
+    .rescue-page {
+
+        padding:
+            35px 20px;
+
+    }
+
+
+    .rescue-heading h1 {
+
+        font-size:
+            33px;
+
+    }
+
+
+    .rescue-card-top,
+    .smart-match-score-row {
+
+        align-items:
+            flex-start;
+
+        flex-direction:
+            column;
+
+    }
+
+
+    .rescue-food-info {
+
+        grid-template-columns:
+            1fr;
+
+    }
+
+
+    .rescue-actions {
+
+        flex-direction:
+            column;
+
+    }
+
+}
+
+</style>
+
+
+
+<main class="rescue-page">
+
+
+<div class="rescue-container">
+
+
+<header class="rescue-heading">
+
+<span class="rescue-heading-label">
+
+SMART RESCUE MATCH
+
+</span>
+
+
+<h1>
+
+Rescue Opportunities
+
+</h1>
+
+
+<p>
+
+These meals were matched to you using
+your MealMate interests, searches,
+location preferences, pickup behaviour
+and collection reliability.
+
+</p>
+
+</header>
+
+
+
+<section class="rescue-list">
+
+
+{% for item in offer_data %}
+
+
+<article class="rescue-card">
+
+
+<div class="rescue-card-top">
+
+
+<div>
+
+<h2>
+
+{{ item.food.food_name }}
+
+</h2>
+
+
+{% if item.business %}
+
+<div class="business-name">
+
+<i class="fa-solid fa-store"></i>
+
+{{ item.business.full_name }}
+
+</div>
+
+{% endif %}
+
+
+</div>
+
+
+</div>
+
+
+
+<div class="rescue-food-info">
+
+
+<div class="rescue-info-item">
+
+<i class="fa-solid fa-location-dot"></i>
+
+<span>
+
+{{ item.food.pickup_address }}
+
+</span>
+
+</div>
+
+
+
+<div class="rescue-info-item">
+
+<i class="fa-solid fa-clock"></i>
+
+<span>
+
+{{ item.food.pickup_start|date:"d M, H:i" }}
+
+–
+
+{{ item.food.pickup_end|date:"H:i" }}
+
+</span>
+
+</div>
+
+
+</div>
+
+
+
+{% rescue_match_details current_user item.food item.offer.match_score %}
+
+
+
+<div class="rescue-actions">
+
+
+<form
+    method="POST"
+    action="{% url 'accept_rescue_offer' item.offer.id %}"
+>
+
+{% csrf_token %}
+
+
+<button
+    type="submit"
+    class="accept-rescue-button"
+>
+
+<i class="fa-solid fa-hand-holding-heart"></i>
+
+Accept Rescue
+
+</button>
+
+</form>
+
+
+
+<form
+    method="POST"
+    action="{% url 'decline_rescue_offer' item.offer.id %}"
+>
+
+{% csrf_token %}
+
+
+<button
+    type="submit"
+    class="decline-rescue-button"
+>
+
+Not Interested
+
+</button>
+
+</form>
+
+
+</div>
+
+
+</article>
+
+
+{% empty %}
+
+
+<div class="empty-rescue">
+
+
+<i class="fa-solid fa-shield-heart"></i>
+
+
+<h2>
+
+No rescue opportunities right now
+
+</h2>
+
+
+<p>
+
+When MealMate finds an urgent food rescue
+that matches your interests and collection
+profile, it will appear here.
+
+</p>
+
+
+</div>
+
+
+{% endfor %}
+
+
+</section>
+
+
+</div>
+
+
+</main>
+
+
+{% endblock %}

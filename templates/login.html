@@ -1,0 +1,48 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign In | MealMate</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+    <link rel="stylesheet" href="{% static 'auth.css' %}">
+</head>
+<body class="auth-page">
+    <a href="{% url 'home' %}" class="auth-brand"><i class="fa-solid fa-leaf"></i><span><b>Meal</b>Mate</span></a>
+    <main class="auth-shell">
+        <section class="auth-card">
+            <div class="auth-icon"><i class="fa-solid fa-right-to-bracket"></i></div>
+            <p class="auth-kicker">WELCOME BACK</p>
+            <h1>Sign in to MealMate</h1>
+            <p class="auth-subtitle">Access your food dashboard, reservations, or business listings.</p>
+            <form method="POST" class="auth-form" novalidate>
+                {% csrf_token %}
+                {% if form.non_field_errors %}<div class="auth-error">{{ form.non_field_errors }}</div>{% endif %}
+                <label>Email address</label>
+                {{ form.email }}
+                {{ form.email.errors }}
+                <label>Password</label>
+                <div class="password-wrap">
+                    {{ form.password }}
+                    <button type="button" class="password-toggle" aria-label="Show password"><i class="fa-solid fa-eye"></i></button>
+                </div>
+                {{ form.password.errors }}
+                <button class="auth-submit" type="submit">Sign In <i class="fa-solid fa-arrow-right"></i></button>
+            </form>
+            <div class="auth-switch">New to MealMate? <a href="{% url 'signup_user' %}">Create a user account</a> or <a href="{% url 'signup_business' %}">business account</a>.</div>
+        </section>
+    </main>
+<script>
+document.querySelectorAll('.password-toggle').forEach(btn => btn.addEventListener('click', () => {
+    const input = btn.parentElement.querySelector('input');
+    input.type = input.type === 'password' ? 'text' : 'password';
+    btn.querySelector('i').classList.toggle('fa-eye');
+    btn.querySelector('i').classList.toggle('fa-eye-slash');
+}));
+</script>
+</body>
+</html>

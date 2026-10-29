@@ -1,0 +1,21 @@
+{% extends 'app_base.html' %}
+{% block title %}Edit Food Post | MealMate{% endblock %}
+{% block business_nav_class %}dashboard-active-link{% endblock %}
+{% block content %}
+<main class="detail-page narrow-page">
+    <a href="{% url 'business_dashboard' %}" class="back-link"><i class="fa-solid fa-arrow-left"></i> Back to Dashboard</a>
+    <section class="business-panel">
+        <div class="business-panel-header"><p class="dashboard-label">EDIT LISTING</p><h1>{{ food.food_name }}</h1><p>Update the quantity, pickup address or collection window.</p></div>
+        <form method="POST" class="food-post-form" novalidate>
+            {% csrf_token %}
+            {% if form.non_field_errors %}<div class="form-error">{{ form.non_field_errors }}</div>{% endif %}
+            <div class="business-form-group"><label>Food name</label>{{ form.food_name }}{{ form.food_name.errors }}</div>
+            <div class="business-form-group"><label>Description</label>{{ form.description }}{{ form.description.errors }}</div>
+            <div class="business-form-group"><label>Quantity</label>{{ form.quantity }}{{ form.quantity.errors }}</div>
+            <div class="business-form-group"><label>Pickup address</label>{{ form.pickup_address }}{{ form.pickup_address.errors }}</div>
+            <div class="business-time-grid"><div class="business-form-group"><label>Pickup starts</label>{{ form.pickup_start }}{{ form.pickup_start.errors }}</div><div class="business-form-group"><label>Pickup ends</label>{{ form.pickup_end }}{{ form.pickup_end.errors }}</div></div>
+            <button type="submit" class="post-food-button">Save Changes</button>
+        </form>
+    </section>
+</main>
+{% endblock %}

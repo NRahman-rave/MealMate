@@ -1,0 +1,2326 @@
+{% extends 'app_base.html' %}
+
+
+{% block title %}
+Business Insights | MealMate
+{% endblock %}
+
+
+{% block content %}
+
+
+<style>
+
+.analytics-page {
+
+    min-height:
+        calc(100vh - 80px);
+
+    padding:
+        45px 5%;
+
+    background:
+        #f6faf7;
+
+}
+
+
+.analytics-container {
+
+    max-width:
+        1250px;
+
+    margin:
+        auto;
+
+}
+
+
+.analytics-header {
+
+    display:
+        flex;
+
+    justify-content:
+        space-between;
+
+    align-items:
+        flex-end;
+
+    gap:
+        20px;
+
+    margin-bottom:
+        28px;
+
+}
+
+
+.analytics-label {
+
+    color:
+        #168447;
+
+    font-size:
+        12px;
+
+    font-weight:
+        900;
+
+    letter-spacing:
+        1.6px;
+
+}
+
+
+.analytics-header h1 {
+
+    margin:
+        7px 0;
+
+    color:
+        #142a38;
+
+    font-size:
+        40px;
+
+}
+
+
+.analytics-header p {
+
+    color:
+        #68777f;
+
+}
+
+
+.back-business {
+
+    padding:
+        10px 14px;
+
+    border:
+        1px solid
+        #dce6de;
+
+    border-radius:
+        10px;
+
+    background:
+        #ffffff;
+
+    color:
+        #168447;
+
+    font-weight:
+        800;
+
+}
+
+
+/* =========================================================
+KPI
+========================================================= */
+
+.kpi-grid {
+
+    display:
+        grid;
+
+    grid-template-columns:
+        repeat(
+            4,
+            minmax(
+                0,
+                1fr
+            )
+        );
+
+    gap:
+        16px;
+
+}
+
+
+.kpi-card {
+
+    padding:
+        23px;
+
+    border:
+        1px solid
+        #dce6de;
+
+    border-radius:
+        17px;
+
+    background:
+        #ffffff;
+
+}
+
+
+.kpi-icon {
+
+    width:
+        44px;
+
+    height:
+        44px;
+
+    display:
+        grid;
+
+    place-items:
+        center;
+
+    margin-bottom:
+        15px;
+
+    border-radius:
+        12px;
+
+    color:
+        #168447;
+
+    background:
+        #e8f5ea;
+
+}
+
+
+.kpi-card strong {
+
+    display:
+        block;
+
+    color:
+        #142a38;
+
+    font-size:
+        32px;
+
+}
+
+
+.kpi-card span {
+
+    display:
+        block;
+
+    margin-top:
+        5px;
+
+    color:
+        #68777f;
+
+    font-size:
+        13px;
+
+}
+
+
+/* =========================================================
+INSIGHT GRID
+========================================================= */
+
+.insight-grid {
+
+    display:
+        grid;
+
+    grid-template-columns:
+        repeat(
+            2,
+            1fr
+        );
+
+    gap:
+        17px;
+
+    margin-top:
+        18px;
+
+}
+
+
+.insight-card {
+
+    padding:
+        24px;
+
+    border:
+        1px solid
+        #dce6de;
+
+    border-radius:
+        17px;
+
+    background:
+        #ffffff;
+
+}
+
+
+.insight-card small {
+
+    color:
+        #168447;
+
+    font-weight:
+        900;
+
+}
+
+
+.insight-card h2 {
+
+    margin-top:
+        7px;
+
+    color:
+        #142a38;
+
+}
+
+
+.insight-value {
+
+    margin-top:
+        14px;
+
+    color:
+        #168447;
+
+    font-size:
+        34px;
+
+    font-weight:
+        900;
+
+}
+
+
+/* =========================================================
+SMART DEMAND FORECAST
+========================================================= */
+
+.forecast-section {
+
+    margin-top:
+        24px;
+
+}
+
+
+.forecast-heading {
+
+    display:
+        flex;
+
+    justify-content:
+        space-between;
+
+    align-items:
+        flex-end;
+
+    gap:
+        20px;
+
+    margin-bottom:
+        16px;
+
+}
+
+
+.forecast-heading-label {
+
+    color:
+        #168447;
+
+    font-size:
+        11px;
+
+    font-weight:
+        900;
+
+    letter-spacing:
+        1.5px;
+
+}
+
+
+.forecast-heading h2 {
+
+    margin-top:
+        5px;
+
+    color:
+        #142a38;
+
+    font-size:
+        28px;
+
+}
+
+
+.forecast-heading p {
+
+    margin-top:
+        7px;
+
+    color:
+        #68777f;
+
+    font-size:
+        13px;
+
+}
+
+
+.forecast-period {
+
+    padding:
+        8px 13px;
+
+    border-radius:
+        30px;
+
+    background:
+        #eaf5ec;
+
+    color:
+        #168447;
+
+    font-size:
+        12px;
+
+    font-weight:
+        900;
+
+}
+
+
+/* =========================================================
+OVERALL FORECAST
+========================================================= */
+
+.forecast-overview {
+
+    display:
+        grid;
+
+    grid-template-columns:
+        0.8fr
+        1.2fr;
+
+    gap:
+        17px;
+
+}
+
+
+.forecast-score-card {
+
+    padding:
+        27px;
+
+    border-radius:
+        18px;
+
+    background:
+        #132f25;
+
+    color:
+        #ffffff;
+
+}
+
+
+.forecast-score-label {
+
+    font-size:
+        11px;
+
+    font-weight:
+        900;
+
+    letter-spacing:
+        1.3px;
+
+    opacity:
+        0.7;
+
+}
+
+
+.forecast-big-score {
+
+    display:
+        flex;
+
+    align-items:
+        flex-end;
+
+    gap:
+        5px;
+
+    margin-top:
+        15px;
+
+}
+
+
+.forecast-big-score strong {
+
+    font-size:
+        58px;
+
+    line-height:
+        1;
+
+}
+
+
+.forecast-big-score span {
+
+    margin-bottom:
+        5px;
+
+    opacity:
+        0.65;
+
+}
+
+
+.forecast-level {
+
+    display:
+        inline-flex;
+
+    align-items:
+        center;
+
+    gap:
+        7px;
+
+    margin-top:
+        20px;
+
+    padding:
+        8px 13px;
+
+    border-radius:
+        30px;
+
+    font-size:
+        12px;
+
+    font-weight:
+        900;
+
+}
+
+
+.forecast-level.high {
+
+    background:
+        #dff4e5;
+
+    color:
+        #13733d;
+
+}
+
+
+.forecast-level.medium {
+
+    background:
+        #fff0cc;
+
+    color:
+        #946217;
+
+}
+
+
+.forecast-level.low {
+
+    background:
+        #f2e6e6;
+
+    color:
+        #9a4444;
+
+}
+
+
+/* =========================================================
+HIGHEST DEMAND
+========================================================= */
+
+.highest-demand-card {
+
+    padding:
+        27px;
+
+    border:
+        1px solid
+        #dce6de;
+
+    border-radius:
+        18px;
+
+    background:
+        #ffffff;
+
+}
+
+
+.highest-demand-card small {
+
+    color:
+        #168447;
+
+    font-weight:
+        900;
+
+    letter-spacing:
+        1px;
+
+}
+
+
+.highest-demand-card h3 {
+
+    margin-top:
+        7px;
+
+    color:
+        #142a38;
+
+    font-size:
+        25px;
+
+}
+
+
+.highest-demand-meta {
+
+    display:
+        flex;
+
+    flex-wrap:
+        wrap;
+
+    gap:
+        8px;
+
+    margin-top:
+        16px;
+
+}
+
+
+.forecast-chip {
+
+    padding:
+        7px 10px;
+
+    border-radius:
+        30px;
+
+    background:
+        #f0f6f1;
+
+    color:
+        #53685a;
+
+    font-size:
+        11px;
+
+    font-weight:
+        800;
+
+}
+
+
+/* =========================================================
+FOOD FORECAST CARDS
+========================================================= */
+
+.forecast-grid {
+
+    display:
+        grid;
+
+    grid-template-columns:
+        repeat(
+            2,
+            minmax(
+                0,
+                1fr
+            )
+        );
+
+    gap:
+        16px;
+
+    margin-top:
+        17px;
+
+}
+
+
+.food-forecast-card {
+
+    padding:
+        22px;
+
+    border:
+        1px solid
+        #dce6de;
+
+    border-radius:
+        17px;
+
+    background:
+        #ffffff;
+
+}
+
+
+.food-forecast-top {
+
+    display:
+        flex;
+
+    align-items:
+        flex-start;
+
+    justify-content:
+        space-between;
+
+    gap:
+        15px;
+
+}
+
+
+.food-forecast-card h3 {
+
+    color:
+        #142a38;
+
+    font-size:
+        18px;
+
+}
+
+
+.food-forecast-score {
+
+    color:
+        #168447;
+
+    font-size:
+        25px;
+
+    font-weight:
+        900;
+
+}
+
+
+.demand-badge {
+
+    display:
+        inline-flex;
+
+    margin-top:
+        7px;
+
+    padding:
+        5px 9px;
+
+    border-radius:
+        30px;
+
+    font-size:
+        10px;
+
+    font-weight:
+        900;
+
+}
+
+
+.demand-badge.high {
+
+    color:
+        #13733d;
+
+    background:
+        #dff4e5;
+
+}
+
+
+.demand-badge.medium {
+
+    color:
+        #946217;
+
+    background:
+        #fff0cc;
+
+}
+
+
+.demand-badge.low {
+
+    color:
+        #9a4444;
+
+    background:
+        #f5e5e5;
+
+}
+
+
+.forecast-progress {
+
+    width:
+        100%;
+
+    height:
+        8px;
+
+    margin-top:
+        18px;
+
+    overflow:
+        hidden;
+
+    border-radius:
+        20px;
+
+    background:
+        #edf2ee;
+
+}
+
+
+.forecast-progress-fill {
+
+    height:
+        100%;
+
+    border-radius:
+        20px;
+
+    background:
+        #168447;
+
+}
+
+
+.forecast-signals {
+
+    margin-top:
+        17px;
+
+}
+
+
+.forecast-signals-title {
+
+    margin-bottom:
+        8px;
+
+    color:
+        #76857c;
+
+    font-size:
+        10px;
+
+    font-weight:
+        900;
+
+    letter-spacing:
+        1px;
+
+}
+
+
+.forecast-signal {
+
+    display:
+        flex;
+
+    align-items:
+        center;
+
+    gap:
+        8px;
+
+    padding:
+        5px 0;
+
+    color:
+        #62736a;
+
+    font-size:
+        12px;
+
+}
+
+
+.forecast-signal i {
+
+    color:
+        #168447;
+
+    font-size:
+        10px;
+
+}
+
+
+/* =========================================================
+FOOD TYPE FORECAST
+========================================================= */
+
+.type-forecast-card {
+
+    margin-top:
+        18px;
+
+    padding:
+        25px;
+
+    border:
+        1px solid
+        #dce6de;
+
+    border-radius:
+        18px;
+
+    background:
+        #ffffff;
+
+}
+
+
+.type-forecast-card h3 {
+
+    margin-bottom:
+        18px;
+
+    color:
+        #142a38;
+
+}
+
+
+.type-row {
+
+    display:
+        grid;
+
+    grid-template-columns:
+        160px
+        1fr
+        75px
+        80px;
+
+    align-items:
+        center;
+
+    gap:
+        15px;
+
+    padding:
+        12px 0;
+
+    border-bottom:
+        1px solid
+        #edf1ee;
+
+}
+
+
+.type-row:last-child {
+
+    border-bottom:
+        0;
+
+}
+
+
+.type-name {
+
+    color:
+        #293e47;
+
+    font-weight:
+        800;
+
+}
+
+
+.type-bar {
+
+    height:
+        8px;
+
+    overflow:
+        hidden;
+
+    border-radius:
+        20px;
+
+    background:
+        #edf2ee;
+
+}
+
+
+.type-bar-fill {
+
+    height:
+        100%;
+
+    border-radius:
+        20px;
+
+    background:
+        #168447;
+
+}
+
+
+.type-score {
+
+    color:
+        #168447;
+
+    font-weight:
+        900;
+
+}
+
+
+/* =========================================================
+CHARTS
+========================================================= */
+
+.chart-grid {
+
+    display:
+        grid;
+
+    grid-template-columns:
+        repeat(
+            2,
+            minmax(
+                0,
+                1fr
+            )
+        );
+
+    gap:
+        18px;
+
+    margin-top:
+        22px;
+
+}
+
+
+.chart-card {
+
+    padding:
+        25px;
+
+    min-height:
+        360px;
+
+    border:
+        1px solid
+        #dce6de;
+
+    border-radius:
+        18px;
+
+    background:
+        #ffffff;
+
+}
+
+
+.chart-card h3 {
+
+    margin-bottom:
+        20px;
+
+    color:
+        #142a38;
+
+}
+
+
+.chart-wrap {
+
+    position:
+        relative;
+
+    height:
+        280px;
+
+}
+
+
+/* =========================================================
+FOOD PERFORMANCE TABLE
+========================================================= */
+
+.performance-card {
+
+    margin-top:
+        18px;
+
+    padding:
+        25px;
+
+    border:
+        1px solid
+        #dce6de;
+
+    border-radius:
+        18px;
+
+    background:
+        #ffffff;
+
+}
+
+
+.performance-card h3 {
+
+    margin-bottom:
+        18px;
+
+    color:
+        #142a38;
+
+}
+
+
+.performance-table {
+
+    width:
+        100%;
+
+    border-collapse:
+        collapse;
+
+}
+
+
+.performance-table th,
+.performance-table td {
+
+    padding:
+        13px 10px;
+
+    border-bottom:
+        1px solid
+        #edf1ee;
+
+    text-align:
+        left;
+
+}
+
+
+.performance-table th {
+
+    color:
+        #718078;
+
+    font-size:
+        12px;
+
+}
+
+
+.performance-table td {
+
+    color:
+        #293c44;
+
+}
+
+
+.status-good {
+
+    color:
+        #168447 !important;
+
+    font-weight:
+        900;
+
+}
+
+
+/* =========================================================
+RESPONSIVE
+========================================================= */
+
+@media (
+    max-width: 950px
+) {
+
+    .kpi-grid {
+
+        grid-template-columns:
+            repeat(
+                2,
+                1fr
+            );
+
+    }
+
+
+    .forecast-overview,
+    .forecast-grid,
+    .chart-grid {
+
+        grid-template-columns:
+            1fr;
+
+    }
+
+}
+
+
+@media (
+    max-width: 650px
+) {
+
+    .analytics-page {
+
+        padding:
+            35px 20px;
+
+    }
+
+
+    .analytics-header,
+    .forecast-heading {
+
+        flex-direction:
+            column;
+
+        align-items:
+            flex-start;
+
+    }
+
+
+    .analytics-header h1 {
+
+        font-size:
+            33px;
+
+    }
+
+
+    .kpi-grid,
+    .insight-grid,
+    .forecast-grid {
+
+        grid-template-columns:
+            1fr;
+
+    }
+
+
+    .type-row {
+
+        grid-template-columns:
+            1fr;
+
+        gap:
+            8px;
+
+    }
+
+
+    .performance-card {
+
+        overflow-x:
+            auto;
+
+    }
+
+}
+
+</style>
+
+
+<main class="analytics-page">
+
+
+<div class="analytics-container">
+
+
+<header class="analytics-header">
+
+
+<div>
+
+<span class="analytics-label">
+
+BUSINESS INTELLIGENCE
+
+</span>
+
+
+<h1>
+
+Business Insights
+
+</h1>
+
+
+<p>
+
+Understand your surplus-food performance
+and forecast demand using real MealMate
+user behaviour.
+
+</p>
+
+</div>
+
+
+<a
+    href="{% url 'business_dashboard' %}"
+    class="back-business"
+>
+
+<i class="fa-solid fa-arrow-left"></i>
+
+Business Dashboard
+
+</a>
+
+
+</header>
+
+
+
+<section class="kpi-grid">
+
+
+<article class="kpi-card">
+
+<div class="kpi-icon">
+
+<i class="fa-solid fa-bowl-food"></i>
+
+</div>
+
+<strong>
+{{ analytics.total_posts }}
+</strong>
+
+<span>
+Total Food Posts
+</span>
+
+</article>
+
+
+<article class="kpi-card">
+
+<div class="kpi-icon">
+
+<i class="fa-solid fa-circle-check"></i>
+
+</div>
+
+<strong>
+{{ analytics.successful_collections }}
+</strong>
+
+<span>
+Successful Collections
+</span>
+
+</article>
+
+
+<article class="kpi-card">
+
+<div class="kpi-icon">
+
+<i class="fa-solid fa-people-arrows"></i>
+
+</div>
+
+<strong>
+{{ analytics.accepted_rescues }}
+</strong>
+
+<span>
+Successful Rescue Relays
+</span>
+
+</article>
+
+
+<article class="kpi-card">
+
+<div class="kpi-icon">
+
+<i class="fa-solid fa-signal"></i>
+
+</div>
+
+<strong>
+{{ analytics.active_posts }}
+</strong>
+
+<span>
+Active Food Posts
+</span>
+
+</article>
+
+
+</section>
+
+
+
+<section class="insight-grid">
+
+
+<article class="insight-card">
+
+<small>
+COLLECTION PERFORMANCE
+</small>
+
+<h2>
+Collection Success Rate
+</h2>
+
+<div class="insight-value">
+
+{{ analytics.collection_success_rate }}%
+
+</div>
+
+</article>
+
+
+<article class="insight-card">
+
+<small>
+RESCUE PERFORMANCE
+</small>
+
+<h2>
+Rescue Success Rate
+</h2>
+
+<div class="insight-value">
+
+{{ analytics.rescue_success_rate }}%
+
+</div>
+
+</article>
+
+
+<article class="insight-card">
+
+<small>
+TOP FOOD
+</small>
+
+<h2>
+Best Performing Post
+</h2>
+
+<div class="insight-value">
+
+{% if analytics.top_food %}
+
+{{ analytics.top_food.name }}
+
+{% else %}
+
+No data yet
+
+{% endif %}
+
+</div>
+
+</article>
+
+
+<article class="insight-card">
+
+<small>
+PICKUP BEHAVIOUR
+</small>
+
+<h2>
+Busiest Pickup Period
+</h2>
+
+<div class="insight-value">
+
+{{ analytics.busiest_pickup_period }}
+
+</div>
+
+</article>
+
+
+</section>
+
+
+
+<!-- =====================================================
+SMART DEMAND FORECAST
+===================================================== -->
+
+<section class="forecast-section">
+
+
+<div class="forecast-heading">
+
+
+<div>
+
+<span class="forecast-heading-label">
+
+SMART DEMAND FORECAST
+
+</span>
+
+
+<h2>
+
+Expected User Demand
+
+</h2>
+
+
+<p>
+
+Calculated from searches, food views,
+saved interests, filters and reservation behaviour.
+
+</p>
+
+</div>
+
+
+<div class="forecast-period">
+
+Last {{ demand_forecast.forecast_days }} days
+
+</div>
+
+
+</div>
+
+
+
+<div class="forecast-overview">
+
+
+<article class="forecast-score-card">
+
+
+<span class="forecast-score-label">
+
+OVERALL EXPECTED DEMAND
+
+</span>
+
+
+<div class="forecast-big-score">
+
+<strong>
+
+{{ demand_forecast.overall_score }}
+
+</strong>
+
+<span>
+
+/ 100
+
+</span>
+
+</div>
+
+
+<div
+    class="
+        forecast-level
+        {{ demand_forecast.overall_class }}
+    "
+>
+
+<i class="fa-solid fa-chart-line"></i>
+
+{{ demand_forecast.overall_level }}
+DEMAND
+
+</div>
+
+
+</article>
+
+
+
+<article class="highest-demand-card">
+
+
+<small>
+
+HIGHEST DEMAND OPPORTUNITY
+
+</small>
+
+
+{% if demand_forecast.highest_demand %}
+
+
+<h3>
+
+{{ demand_forecast.highest_demand.food_name }}
+
+</h3>
+
+
+<div class="highest-demand-meta">
+
+
+<span class="forecast-chip">
+
+<i class="fa-solid fa-bowl-food"></i>
+
+{{ demand_forecast.highest_demand.food_type }}
+
+</span>
+
+
+<span class="forecast-chip">
+
+<i class="fa-solid fa-location-dot"></i>
+
+{{ demand_forecast.highest_demand.area }}
+
+</span>
+
+
+<span class="forecast-chip">
+
+<i class="fa-solid fa-clock"></i>
+
+{{ demand_forecast.highest_demand.pickup_period }}
+
+</span>
+
+
+<span class="forecast-chip">
+
+{{ demand_forecast.highest_demand.score }}/100
+
+</span>
+
+
+</div>
+
+
+{% else %}
+
+
+<h3>
+
+No active food posts
+
+</h3>
+
+
+<p>
+
+Create an active food post to start
+generating demand forecasts.
+
+</p>
+
+
+{% endif %}
+
+
+</article>
+
+
+</div>
+
+
+
+<div class="forecast-grid">
+
+
+{% for forecast in demand_forecast.forecasts %}
+
+
+<article class="food-forecast-card">
+
+
+<div class="food-forecast-top">
+
+
+<div>
+
+<h3>
+
+{{ forecast.food_name }}
+
+</h3>
+
+
+<span
+    class="
+        demand-badge
+        {{ forecast.level_class }}
+    "
+>
+
+{{ forecast.level }} DEMAND
+
+</span>
+
+</div>
+
+
+<div class="food-forecast-score">
+
+{{ forecast.score }}
+
+</div>
+
+
+</div>
+
+
+
+<div class="forecast-progress">
+
+<div
+    class="forecast-progress-fill"
+    style="width: {{ forecast.score }}%;"
+></div>
+
+</div>
+
+
+
+<div class="highest-demand-meta">
+
+
+<span class="forecast-chip">
+
+{{ forecast.food_type }}
+
+</span>
+
+
+<span class="forecast-chip">
+
+{{ forecast.area }}
+
+</span>
+
+
+<span class="forecast-chip">
+
+{{ forecast.pickup_period }}
+
+</span>
+
+
+</div>
+
+
+
+<div class="forecast-signals">
+
+
+<div class="forecast-signals-title">
+
+DEMAND SIGNALS
+
+</div>
+
+
+{% for signal in forecast.signals %}
+
+
+<div class="forecast-signal">
+
+<i class="fa-solid fa-circle-check"></i>
+
+{{ signal }}
+
+</div>
+
+
+{% endfor %}
+
+
+</div>
+
+
+</article>
+
+
+{% empty %}
+
+
+<article class="food-forecast-card">
+
+
+<h3>
+
+No forecasts available yet
+
+</h3>
+
+
+<div class="forecast-signals">
+
+Create an active food post and MealMate
+will begin analysing user demand.
+
+</div>
+
+
+</article>
+
+
+{% endfor %}
+
+
+</div>
+
+
+
+{% if demand_forecast.food_type_forecasts %}
+
+
+<section class="type-forecast-card">
+
+
+<h3>
+
+Demand by Food Type
+
+</h3>
+
+
+{% for item in demand_forecast.food_type_forecasts %}
+
+
+<div class="type-row">
+
+
+<div class="type-name">
+
+{{ item.name }}
+
+</div>
+
+
+<div class="type-bar">
+
+<div
+    class="type-bar-fill"
+    style="width: {{ item.score }}%;"
+></div>
+
+</div>
+
+
+<div class="type-score">
+
+{{ item.score }}/100
+
+</div>
+
+
+<div>
+
+<span
+    class="
+        demand-badge
+        {{ item.level_class }}
+    "
+>
+
+{{ item.level }}
+
+</span>
+
+</div>
+
+
+</div>
+
+
+{% endfor %}
+
+
+</section>
+
+
+{% endif %}
+
+
+</section>
+
+
+
+<!-- =====================================================
+EXISTING ANALYTICS
+===================================================== -->
+
+<section class="chart-grid">
+
+
+<article class="chart-card">
+
+<h3>
+Collection Outcomes
+</h3>
+
+<div class="chart-wrap">
+
+<canvas id="collectionChart"></canvas>
+
+</div>
+
+</article>
+
+
+<article class="chart-card">
+
+<h3>
+Rescue Relay Outcomes
+</h3>
+
+<div class="chart-wrap">
+
+<canvas id="rescueChart"></canvas>
+
+</div>
+
+</article>
+
+
+<article class="chart-card">
+
+<h3>
+Top Food Performance
+</h3>
+
+<div class="chart-wrap">
+
+<canvas id="foodChart"></canvas>
+
+</div>
+
+</article>
+
+
+<article class="chart-card">
+
+<h3>
+Pickup Time Behaviour
+</h3>
+
+<div class="chart-wrap">
+
+<canvas id="pickupChart"></canvas>
+
+</div>
+
+</article>
+
+
+</section>
+
+
+
+<section class="performance-card">
+
+
+<h3>
+Food Performance
+</h3>
+
+
+<table class="performance-table">
+
+
+<thead>
+
+<tr>
+
+<th>
+Food
+</th>
+
+<th>
+Collected
+</th>
+
+<th>
+Remaining
+</th>
+
+</tr>
+
+</thead>
+
+
+<tbody>
+
+
+{% for item in analytics.food_performance %}
+
+
+<tr>
+
+<td>
+{{ item.name }}
+</td>
+
+<td class="status-good">
+{{ item.collected }}
+</td>
+
+<td>
+{{ item.remaining }}
+</td>
+
+</tr>
+
+
+{% empty %}
+
+
+<tr>
+
+<td colspan="3">
+
+No food performance data yet.
+
+</td>
+
+</tr>
+
+
+{% endfor %}
+
+
+</tbody>
+
+
+</table>
+
+
+</section>
+
+
+</div>
+
+
+</main>
+
+
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+
+{{ analytics.collection_chart.labels|json_script:"collection-labels" }}
+{{ analytics.collection_chart.values|json_script:"collection-values" }}
+
+{{ analytics.rescue_chart.labels|json_script:"rescue-labels" }}
+{{ analytics.rescue_chart.values|json_script:"rescue-values" }}
+
+{{ analytics.top_food_chart.labels|json_script:"food-labels" }}
+{{ analytics.top_food_chart.values|json_script:"food-values" }}
+
+{{ analytics.pickup_chart.labels|json_script:"pickup-labels" }}
+{{ analytics.pickup_chart.values|json_script:"pickup-values" }}
+
+
+<script>
+
+document.addEventListener(
+    "DOMContentLoaded",
+    function () {
+
+
+        const collectionLabels =
+            JSON.parse(
+                document.getElementById(
+                    "collection-labels"
+                ).textContent
+            );
+
+
+        const collectionValues =
+            JSON.parse(
+                document.getElementById(
+                    "collection-values"
+                ).textContent
+            );
+
+
+        const rescueLabels =
+            JSON.parse(
+                document.getElementById(
+                    "rescue-labels"
+                ).textContent
+            );
+
+
+        const rescueValues =
+            JSON.parse(
+                document.getElementById(
+                    "rescue-values"
+                ).textContent
+            );
+
+
+        const foodLabels =
+            JSON.parse(
+                document.getElementById(
+                    "food-labels"
+                ).textContent
+            );
+
+
+        const foodValues =
+            JSON.parse(
+                document.getElementById(
+                    "food-values"
+                ).textContent
+            );
+
+
+        const pickupLabels =
+            JSON.parse(
+                document.getElementById(
+                    "pickup-labels"
+                ).textContent
+            );
+
+
+        const pickupValues =
+            JSON.parse(
+                document.getElementById(
+                    "pickup-values"
+                ).textContent
+            );
+
+
+        new Chart(
+            document.getElementById(
+                "collectionChart"
+            ),
+            {
+                type:
+                    "doughnut",
+
+                data: {
+
+                    labels:
+                        collectionLabels,
+
+                    datasets: [
+                        {
+                            data:
+                                collectionValues
+                        }
+                    ]
+                },
+
+                options: {
+
+                    responsive:
+                        true,
+
+                    maintainAspectRatio:
+                        false
+                }
+            }
+        );
+
+
+        new Chart(
+            document.getElementById(
+                "rescueChart"
+            ),
+            {
+                type:
+                    "doughnut",
+
+                data: {
+
+                    labels:
+                        rescueLabels,
+
+                    datasets: [
+                        {
+                            data:
+                                rescueValues
+                        }
+                    ]
+                },
+
+                options: {
+
+                    responsive:
+                        true,
+
+                    maintainAspectRatio:
+                        false
+                }
+            }
+        );
+
+
+        new Chart(
+            document.getElementById(
+                "foodChart"
+            ),
+            {
+                type:
+                    "bar",
+
+                data: {
+
+                    labels:
+                        foodLabels,
+
+                    datasets: [
+                        {
+                            label:
+                                "Collections",
+
+                            data:
+                                foodValues
+                        }
+                    ]
+                },
+
+                options: {
+
+                    responsive:
+                        true,
+
+                    maintainAspectRatio:
+                        false,
+
+                    scales: {
+
+                        y: {
+
+                            beginAtZero:
+                                true,
+
+                            ticks: {
+
+                                precision:
+                                    0
+                            }
+                        }
+                    }
+                }
+            }
+        );
+
+
+        new Chart(
+            document.getElementById(
+                "pickupChart"
+            ),
+            {
+                type:
+                    "bar",
+
+                data: {
+
+                    labels:
+                        pickupLabels,
+
+                    datasets: [
+                        {
+                            label:
+                                "Reservations",
+
+                            data:
+                                pickupValues
+                        }
+                    ]
+                },
+
+                options: {
+
+                    responsive:
+                        true,
+
+                    maintainAspectRatio:
+                        false,
+
+                    scales: {
+
+                        y: {
+
+                            beginAtZero:
+                                true,
+
+                            ticks: {
+
+                                precision:
+                                    0
+                            }
+                        }
+                    }
+                }
+            }
+        );
+
+
+    }
+);
+
+</script>
+
+
+{% endblock %}

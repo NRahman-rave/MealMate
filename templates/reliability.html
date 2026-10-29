@@ -1,0 +1,618 @@
+{% extends 'app_base.html' %}
+
+
+{% block title %}
+Collection Reliability | MealMate
+{% endblock %}
+
+
+{% block content %}
+
+
+<style>
+
+.reliability-page {
+
+    min-height:
+        calc(100vh - 80px);
+
+    padding:
+        50px 6%;
+
+    background:
+        #f7faf7;
+
+}
+
+
+.reliability-container {
+
+    max-width:
+        900px;
+
+    margin:
+        auto;
+
+}
+
+
+.reliability-header {
+
+    margin-bottom:
+        28px;
+
+}
+
+
+.reliability-header h1 {
+
+    margin:
+        6px 0 8px;
+
+    color:
+        #132936;
+
+    font-size:
+        40px;
+
+}
+
+
+.reliability-header p {
+
+    color:
+        #68777f;
+
+    line-height:
+        1.6;
+
+}
+
+
+.score-card {
+
+    padding:
+        34px;
+
+    background:
+        #ffffff;
+
+    border:
+        1px solid
+        #dce7de;
+
+    border-radius:
+        20px;
+
+    box-shadow:
+        0 12px 32px
+        rgba(
+            25,
+            70,
+            43,
+            0.06
+        );
+
+}
+
+
+.score-top {
+
+    display:
+        flex;
+
+    align-items:
+        center;
+
+    justify-content:
+        space-between;
+
+    gap:
+        25px;
+
+}
+
+
+.score-number {
+
+    font-size:
+        68px;
+
+    line-height:
+        1;
+
+    font-weight:
+        900;
+
+    color:
+        #168447;
+
+}
+
+
+.score-number span {
+
+    font-size:
+        28px;
+
+}
+
+
+.score-status {
+
+    padding:
+        9px 15px;
+
+    border-radius:
+        30px;
+
+    background:
+        #e7f5ea;
+
+    color:
+        #168447;
+
+    font-weight:
+        900;
+
+}
+
+
+.score-progress {
+
+    width:
+        100%;
+
+    height:
+        13px;
+
+    margin-top:
+        28px;
+
+    overflow:
+        hidden;
+
+    border-radius:
+        30px;
+
+    background:
+        #edf2ee;
+
+}
+
+
+.score-progress-fill {
+
+    height:
+        100%;
+
+    border-radius:
+        30px;
+
+    background:
+        #168447;
+
+}
+
+
+.reliability-grid {
+
+    display:
+        grid;
+
+    grid-template-columns:
+        repeat(
+            3,
+            1fr
+        );
+
+    gap:
+        16px;
+
+    margin-top:
+        20px;
+
+}
+
+
+.stat-card {
+
+    padding:
+        23px;
+
+    background:
+        #ffffff;
+
+    border:
+        1px solid
+        #dfe7e0;
+
+    border-radius:
+        15px;
+
+}
+
+
+.stat-card i {
+
+    margin-bottom:
+        15px;
+
+    color:
+        #168447;
+
+    font-size:
+        25px;
+
+}
+
+
+.stat-card strong {
+
+    display:
+        block;
+
+    color:
+        #142a38;
+
+    font-size:
+        30px;
+
+}
+
+
+.stat-card span {
+
+    display:
+        block;
+
+    margin-top:
+        5px;
+
+    color:
+        #6b797f;
+
+    font-size:
+        13px;
+
+}
+
+
+.how-score-works {
+
+    margin-top:
+        25px;
+
+    padding:
+        25px;
+
+    border:
+        1px solid
+        #dfe7e0;
+
+    border-radius:
+        16px;
+
+    background:
+        #ffffff;
+
+}
+
+
+.how-score-works h3 {
+
+    margin-bottom:
+        14px;
+
+    color:
+        #142a38;
+
+}
+
+
+.score-rule {
+
+    display:
+        flex;
+
+    align-items:
+        center;
+
+    justify-content:
+        space-between;
+
+    gap:
+        20px;
+
+    padding:
+        11px 0;
+
+    border-bottom:
+        1px solid
+        #edf1ee;
+
+}
+
+
+.score-rule:last-child {
+
+    border-bottom:
+        0;
+
+}
+
+
+.positive {
+
+    color:
+        #168447;
+
+    font-weight:
+        900;
+
+}
+
+
+.negative {
+
+    color:
+        #b84646;
+
+    font-weight:
+        900;
+
+}
+
+
+@media (
+    max-width: 650px
+) {
+
+    .reliability-page {
+
+        padding:
+            35px 20px;
+
+    }
+
+
+    .score-top {
+
+        align-items:
+            flex-start;
+
+        flex-direction:
+            column;
+
+    }
+
+
+    .reliability-grid {
+
+        grid-template-columns:
+            1fr;
+
+    }
+
+}
+
+</style>
+
+
+<main class="reliability-page">
+
+
+<div class="reliability-container">
+
+
+<section class="reliability-header">
+
+<p class="dashboard-label">
+
+MEALMATE TRUST
+
+</p>
+
+
+<h1>
+
+Collection Reliability
+
+</h1>
+
+
+<p>
+
+Your reliability score helps MealMate
+choose dependable users when an urgent
+Smart Rescue opportunity becomes available.
+
+</p>
+
+</section>
+
+
+
+<section class="score-card">
+
+
+<div class="score-top">
+
+
+<div>
+
+
+<div class="score-number">
+
+{{ reliability.score }}
+
+<span>%</span>
+
+</div>
+
+
+</div>
+
+
+<div class="score-status">
+
+{{ reliability.label }}
+
+</div>
+
+
+</div>
+
+
+<div class="score-progress">
+
+<div
+    class="score-progress-fill"
+    style="width: {{ reliability.score }}%;"
+></div>
+
+</div>
+
+
+</section>
+
+
+
+<section class="reliability-grid">
+
+
+<article class="stat-card">
+
+<i class="fa-solid fa-circle-check"></i>
+
+<strong>
+
+{{ reliability.successful_collections }}
+
+</strong>
+
+<span>
+
+Successful Collections
+
+</span>
+
+</article>
+
+
+
+<article class="stat-card">
+
+<i class="fa-solid fa-people-arrows"></i>
+
+<strong>
+
+{{ reliability.responsible_rescue_passes }}
+
+</strong>
+
+<span>
+
+Successful Rescue Passes
+
+</span>
+
+</article>
+
+
+
+<article class="stat-card">
+
+<i class="fa-solid fa-clock"></i>
+
+<strong>
+
+{{ reliability.missed_collections }}
+
+</strong>
+
+<span>
+
+Missed Collections
+
+</span>
+
+</article>
+
+
+</section>
+
+
+
+<section class="how-score-works">
+
+
+<h3>
+
+How your score works
+
+</h3>
+
+
+<div class="score-rule">
+
+<span>
+Starting reliability
+</span>
+
+<strong>
+75%
+</strong>
+
+</div>
+
+
+<div class="score-rule">
+
+<span>
+Successful collection
+</span>
+
+<span class="positive">
++3
+</span>
+
+</div>
+
+
+<div class="score-rule">
+
+<span>
+Successful Rescue Relay pass
+</span>
+
+<span class="positive">
++2
+</span>
+
+</div>
+
+
+<div class="score-rule">
+
+<span>
+Missed collection
+</span>
+
+<span class="negative">
+−20
+</span>
+
+</div>
+
+
+</section>
+
+
+</div>
+
+
+</main>
+
+
+{% endblock %}
